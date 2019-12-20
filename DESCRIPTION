@@ -15,3 +15,4 @@ Imports:
     shiny,
     shinythemes,
     colourpicker
+RoxygenNote: 6.1.1
