@@ -15,11 +15,9 @@ Title
 \examples{
 n185()
 
-a <- ff(55, 4500, 50)
-
+a <- ff(55, 4500, 40)
 draw(a)
 
 b <- shift(a, 40)
-
 draw(b, "grey50", 2)
 }
