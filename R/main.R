@@ -1,10 +1,10 @@
-# Standard JEA Colors
-JEA.Dark <- rgb(t(matrix(c(20, 43, 108)/255)))
-JEA.Blue <- rgb(t(matrix(c(0, 106, 151)/255)))
-JEA.Green <- rgb(t(matrix(c(65, 173, 73)/255)))
-JEA.Orange <- rgb(t(matrix(c(244, 199, 33)/255)))
-JEA.Grey <- rgb(t(matrix(c(109, 110, 113)/255)))
-JEA.Grey <- rgb(109/255, 110/255, 113/255, 0.5)
+# # Standard JEA Colors
+# JEA.Dark <- rgb(t(matrix(c(20, 43, 108)/255)))
+# JEA.Blue <- rgb(t(matrix(c(0, 106, 151)/255)))
+# JEA.Green <- rgb(t(matrix(c(65, 173, 73)/255)))
+# JEA.Orange <- rgb(t(matrix(c(244, 199, 33)/255)))
+# JEA.Grey <- rgb(t(matrix(c(109, 110, 113)/255)))
+# JEA.Grey <- rgb(109/255, 110/255, 113/255, 0.5)
 
 #ff_info <- NULL
 
@@ -151,6 +151,8 @@ shift <- function(fireflow, static) {
 
 tilt <- function(fireflow, friction_factor) {
   fireflow[2] <- unlist(fireflow[2])+friction_factor
+  fireflow[3] <- NA
+  fireflow[4] <- NA
 
   return(fireflow)
 }
