@@ -22,18 +22,28 @@
 #' a <- ff(60,3000,20)
 #'
 #' draw(a)
-n185 <- function(MaxFlow=5000) {
+n185 <- function(MaxFlow=5000, MaxPressure=100) {
   ff_info <<- NULL
 
   Q <- seq(MaxFlow/10,MaxFlow,MaxFlow/10)
-  plot(0,0, xaxt="n", yaxt="n",type="l", xaxs="i", yaxs="i", xlab="", ylab="", ylim=c(0,100), xlim=c(0,(MaxFlow)^1.85))
+
+  plot(0,0
+       , xaxt="n"
+       , yaxt="n"
+       , type="l"
+       , xaxs="i"
+       , yaxs="i"
+       , xlab=""
+       , ylab=""
+       , ylim=c(0, MaxPressure)
+       , xlim=c(0,(MaxFlow)^1.85))
 
   # Grid Lines
-  abline(h=seq(0,100,10), v=seq(MaxFlow/10,MaxFlow,MaxFlow/20)^1.85, col="gray75")
+  abline(h=seq(0,MaxPressure,10), v=seq(MaxFlow/10,MaxFlow,MaxFlow/20)^1.85, col="gray75")
 
   # Axis labels
   axis(1,at=Q^1.85,labels=prettyNum(Q, big.mark=","), line=0, col.axis="black", cex.axis=0.75)
-  axis(2, at=seq(0,100,10), labels=seq(0,100,10), col.axis="black", cex.axis=0.75, line=0, tick=F)
+  axis(2, at=seq(0,MaxPressure,10), labels=seq(0,MaxPressure,10), col.axis="black", cex.axis=0.75, line=0, tick=F)
 
   # Tick marks
   axis(1,at=(seq(100*MaxFlow,1000*MaxFlow,10*MaxFlow)/1000)^1.85,labels=NA, tck=0.02)
@@ -41,10 +51,10 @@ n185 <- function(MaxFlow=5000) {
   axis(3,at=(seq(100*MaxFlow,1000*MaxFlow,10*MaxFlow)/1000)^1.85,labels=NA, tck=0.02)
   axis(3,at=(seq(100*MaxFlow,990*MaxFlow,5*MaxFlow)/1000)^1.85,labels=NA, tck=0.01)
 
-  axis(2,at=seq(0,100,5), labels=NA, tck=-0.02)
-  axis(2,at=seq(0,100,1), labels=NA, tck=-0.01)
-  axis(4,at=seq(0,100,5), labels=NA, tck=0.02)
-  axis(4,at=seq(0,100,1), labels=NA, tck=0.01)
+  axis(2,at=seq(0,MaxPressure,5), labels=NA, tck=-0.02)
+  axis(2,at=seq(0,MaxPressure,1), labels=NA, tck=-0.01)
+  axis(4,at=seq(0,MaxPressure,5), labels=NA, tck=0.02)
+  axis(4,at=seq(0,MaxPressure,1), labels=NA, tck=0.01)
 
   # Axis Title
   mtext("Flow (GPM)", side=1, line=3, cex=0.9, family="serif")
