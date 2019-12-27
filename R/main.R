@@ -9,9 +9,12 @@
 #ff_info <- NULL
 
 
-#' Provides a framework for N^1.85 logarithmic graph based on NFPA 291 recommendations.
+#' Create a new n185 plot.
 #'
-#' @param MaxFlow Maximum Flow in GPM
+#' Provides a framework for \out{n<sup>1.85</sup>} logarithmic graph based on NFPA 291 recommendations.
+#'
+#' @param MaxFlow Maximum Flow in GPM for x-axis
+#' @param MaxPressure Maximum Pressure in PSI for y-axis
 #'
 #' @return framework for drawing fireflow objects
 #' @export
@@ -23,6 +26,23 @@
 #'
 #' draw(a)
 n185 <- function(MaxFlow=5000, MaxPressure=100) {
+  #### error checking ####
+  if ((MaxFlow<=0)|(MaxPressure<=0)) {
+    stop("Must use a non-negative integer.")
+  }
+
+  if( !MaxFlow==trunc(MaxFlow)) {
+      MaxFlow <- trunc(MaxFlow)
+      message("Maximum flow truncated to integer.")
+  }
+
+  if( !MaxPressure==trunc(MaxPressure)) {
+    MaxPressure <- trunc(MaxPressure)
+    message("Maximum pressure truncated to integer.")
+  }
+
+
+  #### main body ####
   ff_info <<- NULL
 
   Q <- seq(MaxFlow/10,MaxFlow,MaxFlow/10)
@@ -118,8 +138,10 @@ draw <- function(fireflow, color="black", LineType=1) {
 #'
 #' @return FireFlow Object
 #'
+#' @seealso [tilt](?tilt), shift
+#'
 #' @examples
-#' #' n185()
+#' n185()
 #'
 #' a <- ff(60,3000,20, "first")
 #' b <- ff(50,2750, 35, "second")
@@ -216,7 +238,7 @@ nff <- function(fireflow, Q) {
 
 }
 
-ke <- function(D,C=130){return(10.44/C^1.85/D^4.87/2.31)}
+kp <- function(D,C=130){return(10.44/C^1.85/D^4.87/2.31)}
 
 # enter just Q, just P, or both
 pt <- function(Qt=NULL, Pt=NULL, fireflow=NULL, color="black"){

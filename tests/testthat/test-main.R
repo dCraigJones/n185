@@ -35,5 +35,25 @@ test_that("ff() is correct", {
   expect_equal(ff(50,2000,30)$k, 1.564E-5, tolerance=0.001E-5)
 })
 
-context("Graphical Interface")
+test_that("tilt is correct", {
+  expect_equal(ff(50,3000, 20)$k, shift(ff(50,3000, 20), 40)$k)
+
+})
+
+context("n185 Interface")
+
+test_that("n185 input", {
+  expect_error(n185(-5000))
+  expect_error(n185(5000, -40))
+  expect_error(n185(-5000,-100))
+
+  expect_message(n185(5000.1))
+  expect_message(n185(5000, 40.1))
+  expect_message(n185(5000.1, 40.1))
+
+  expect_error(n185("a"))
+  expect_error(n185(5000,"a"))
+  expect_error(n185("a", "b"))
+
+})
 
