@@ -36,15 +36,16 @@ ui <- fluidPage(theme=shinythemes::shinytheme("united"),
        , hr()
 
        , HTML("<h3>Graph Properties:</h3>")
-       , textInput("title", "Title")
-       , selectInput("legend", "Legend", r_legend)
-       , checkboxInput("date", "Add Date")
-       , checkboxInput("cya", "Add Provision")
+       , textInput("g_title", "Title")
+       , selectInput("g_legend", "Legend", r_legend)
+       , checkboxInput("g_date", "Add Date")
+       , checkboxInput("g_cya", "Add Provision")
        , br()
-       , div(style="display:inline-block;vertical-align:top;", fluidRow(
-           column(5, actionButton("draw", "Update") ),
-           column(5, actionButton("clear", "Clear") )
-       )) #div
+       , actionButton("g_draw", "Update")
+       # , div(style="display:inline-block;vertical-align:top;", fluidRow(
+       #     column(5, actionButton("g_draw", "Update") ),
+       #     column(5, actionButton("g_clear", "Clear") )
+       # )) #div
 
        , hr()
        , HTML("<h3>Adjust Scale:</h3>")
@@ -56,9 +57,9 @@ ui <- fluidPage(theme=shinythemes::shinytheme("united"),
 
     #### Main Panel UI ####
      mainPanel(
-
-         plotOutput("main_plot")
-       , DTOutput("main_table")
+         htmlOutput("main_hover")
+       , plotOutput("main_plot", hover="main_hover")
+       , textOutput("main_table")
 
      )
 
@@ -68,11 +69,37 @@ ui <- fluidPage(theme=shinythemes::shinytheme("united"),
 
 server <- function(input, output, session) {
 
-  output$main_plot <- renderPlot( n185() )
+  output$main_hover <- renderText( paste0() )
 
-  output$main_table <- renderDT( ff_info )
+  output$main_plot <- renderPlot( n185(input$max_flow, input$max_psi) )
 
+  observeEvent( input$ff_reset, {
+    output$main_plot <- renderPlot({ n185() })
 
+    ff_info <<- NULL
+
+  })
+
+  observeEvent( input$g_draw, {
+    output$main_plot <- renderPlot({
+
+      tmp_ff_info <<- ff_info
+
+      n185( input$max_flow, input$max_psi )
+
+      draw_prev_fireflow(tmp_ff_info)
+
+      title( input$g_title )
+
+      if (!input$g_legend=="none") {
+        draw_legend(input$g_legend)
+      }
+
+      if (input$g_cya) {mtext("This document is for JEA planning purposes only and should not be used for design.",side=3, line=0, cex=0.50, font=3)}
+      if (input$g_date) {mtext(Sys.Date(),side=3, line=2, cex=0.5, adj=1)}
+    })
+
+  })
 
   observeEvent( input$ff_draw, {
 
@@ -85,7 +112,7 @@ server <- function(input, output, session) {
 
       tmp_ff_info <<- ff_info
 
-      n185()
+      n185( input$max_flow, input$max_psi )
 
       draw_prev_fireflow(tmp_ff_info)
 
@@ -94,7 +121,14 @@ server <- function(input, output, session) {
 
     clear_fireflow(session)
 
+    # output$main_table <- DT::renderDataTable(as.data.frame(ff_info[,c(5,1,3,4)])
+    #     , rownames=FALSE
+    #     , options=list(dom="tip")
+    # )
+
   }) # oberseveEvent ff_draw
+
+
 
 }
 
