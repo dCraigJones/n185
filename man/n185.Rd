@@ -2,18 +2,20 @@
 % Please edit documentation in R/main.R
 \name{n185}
 \alias{n185}
-\title{Provides a framework for N^1.85 logarithmic graph based on NFPA 291 recommendations.}
+\title{Create a new n185 plot.}
 \usage{
-n185(MaxFlow = 5000)
+n185(MaxFlow = 5000, MaxPressure = 100)
 }
 \arguments{
-\item{MaxFlow}{Maximum Flow in GPM}
+\item{MaxFlow}{Maximum Flow in GPM for x-axis}
+
+\item{MaxPressure}{Maximum Pressure in PSI for y-axis}
 }
 \value{
 framework for drawing fireflow objects
 }
 \description{
-Provides a framework for N^1.85 logarithmic graph based on NFPA 291 recommendations.
+Provides a framework for \out{n<sup>1.85</sup>} logarithmic graph based on NFPA 291 recommendations.
 }
 \examples{
 n185()

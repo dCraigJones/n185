@@ -22,7 +22,7 @@ FireFlow Object
 Creates a fire flow supply curve based on a single hydrant test per NFPA 291 Recommended Practice for Fire Flow Testing
 }
 \examples{
-#' n185()
+n185()
 
 a <- ff(60,3000,20, "first")
 b <- ff(50,2750, 35, "second")
@@ -31,4 +31,7 @@ draw(a, "red", 1)
 draw(b, "blue", 2)
 
 draw_legend()
+}
+\seealso{
+[tilt](?tilt), shift
 }
