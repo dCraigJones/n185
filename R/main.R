@@ -67,9 +67,9 @@ n185 <- function(MaxFlow=5000, MaxPressure=100) {
 
   # Tick marks
   axis(1,at=(seq(100*MaxFlow,1000*MaxFlow,10*MaxFlow)/1000)^1.85,labels=NA, tck=0.02)
-  axis(1,at=(seq(100*MaxFlow,990*MaxFlow,5*MaxFlow)/1000)^1.85,labels=NA, tck=0.01)
+  axis(1,at=(seq(400*MaxFlow,990*MaxFlow,5*MaxFlow)/1000)^1.85,labels=NA, tck=0.01)
   axis(3,at=(seq(100*MaxFlow,1000*MaxFlow,10*MaxFlow)/1000)^1.85,labels=NA, tck=0.02)
-  axis(3,at=(seq(100*MaxFlow,990*MaxFlow,5*MaxFlow)/1000)^1.85,labels=NA, tck=0.01)
+  axis(3,at=(seq(400*MaxFlow,990*MaxFlow,5*MaxFlow)/1000)^1.85,labels=NA, tck=0.01)
 
   axis(2,at=seq(0,MaxPressure,5), labels=NA, tck=-0.02)
   axis(2,at=seq(0,MaxPressure,1), labels=NA, tck=-0.01)
@@ -267,3 +267,5 @@ draw_legend <- function(position="topright") {
          , text.font=2
   )
 }
+
+n185_ui <- function() { library(shiny); shiny::runApp("./inst/n185") }
