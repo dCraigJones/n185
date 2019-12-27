@@ -1,6 +1,7 @@
 library("shiny")
 library("shinythemes")
 library("colourpicker")
+library("DT")
 
 source("def.R")
 source("util.R")
@@ -8,6 +9,7 @@ source("util.R")
 ui <- fluidPage(theme=shinythemes::shinytheme("united"),
    sidebarLayout(
 
+    #### Sidebar UI ####
      sidebarPanel(
 
          HTML("<h3>Fireflow Instance:</h3>")
@@ -52,10 +54,11 @@ ui <- fluidPage(theme=shinythemes::shinytheme("united"),
 
      ), # sidebarPanel
 
+    #### Main Panel UI ####
      mainPanel(
 
          plotOutput("main_plot")
-       , tableOutput("main_table")
+       , DTOutput("main_table")
 
      )
 
@@ -67,7 +70,7 @@ server <- function(input, output, session) {
 
   output$main_plot <- renderPlot( n185() )
 
-  output$main_table <- renderTable( ff_info )
+  output$main_table <- renderDT( ff_info )
 
 
 
@@ -87,11 +90,9 @@ server <- function(input, output, session) {
       draw_prev_fireflow(tmp_ff_info)
 
       draw(tmp_ff, tmp_col, tmp_lty)
-
-
     })
 
-    clear_fireflow()
+    clear_fireflow(session)
 
   }) # oberseveEvent ff_draw
 
