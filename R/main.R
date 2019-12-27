@@ -86,6 +86,12 @@ n185 <- function(MaxFlow=5000, MaxPressure=100) {
 #'
 #' draw_legend()
 draw <- function(fireflow, color="black", LineType=1) {
+
+  #### Error Checking ####
+  if(!exists("ff_info")) { stop("Must call n185() before draw()") }
+
+
+  #### Main Body ####
   tmp <- fireflow
   tmp$color <- color
   tmp$linetype <- LineType
@@ -123,6 +129,7 @@ draw <- function(fireflow, color="black", LineType=1) {
 #'
 #' draw_legend()
 ff <- function(Ps, Qt, Pt, ID="") {
+  #### Error Checking ####
 
   # Convert numeric-type string input to numeric...
   Ps <- suppressWarnings(as.numeric(Ps))
@@ -144,6 +151,7 @@ ff <- function(Ps, Qt, Pt, ID="") {
 
   if (!class(ID)=="character") stop("Fireflow ID must be a character/string.")
 
+  #### Main Body ####
 
   k_psi <- (Ps-Pt)/(Qt^1.85)
 
