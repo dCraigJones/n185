@@ -30,3 +30,10 @@ test_that("ff() is well-formed", {
   expect_equal(as.character(ff(60,3000,20, "a")[5]), "a")
 })
 
+test_that("ff() is correct", {
+  expect_equal(ff(60,3000,20)$k, 1.477E-5, tolerance=0.001E-5)
+  expect_equal(ff(50,2000,30)$k, 1.564E-5, tolerance=0.001E-5)
+})
+
+context("Graphical Interface")
+
