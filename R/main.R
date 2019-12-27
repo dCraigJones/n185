@@ -123,6 +123,28 @@ draw <- function(fireflow, color="black", LineType=1) {
 #'
 #' draw_legend()
 ff <- function(Ps, Qt, Pt, ID="") {
+
+  # Convert numeric-type string input to numeric...
+  Ps <- suppressWarnings(as.numeric(Ps))
+  Qt <- suppressWarnings(as.numeric(Qt))
+  Pt <- suppressWarnings(as.numeric(Pt))
+
+  # ... return warning if input is non-numeric.
+  if(is.na(Ps)|is.na(Qt)|is.na(Pt)) { stop("Numerical inputs required.") }
+
+  # Check for negative input values
+  if (Ps <= 0) stop("Static must be greater than 0.")
+  if (Qt <= 0) stop("Test Flow must be greater than 0.")
+  if (Pt <= 0) stop("Test Residual must be greater than 0.")
+
+  # Check Input for unreasonable values
+  if (Ps > 100) warning("Static is greater than 100 PSI.  This may be unreasonable.")
+  if (Pt < 20) warning("Test Residual is less than 20 PSI.  This may be unreasonable.")
+  if (Ps <= Pt) stop("Static pressure must be greater than residual pressure.")
+
+  if (!class(ID)=="character") stop("Fireflow ID must be a character/string.")
+
+
   k_psi <- (Ps-Pt)/(Qt^1.85)
 
   ff <- structure(list(), class="fireflow")
