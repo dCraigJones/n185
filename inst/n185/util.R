@@ -1,4 +1,4 @@
-clear_fireflow <- function() {
+clear_fireflow <- function(session) {
 
   updateNumericInput(session, "ff_static", value=0)
   updateNumericInput(session, "ff_flow", value=0)
