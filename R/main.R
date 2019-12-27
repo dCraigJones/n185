@@ -138,7 +138,7 @@ draw <- function(fireflow, color="black", LineType=1) {
 #'
 #' @return FireFlow Object
 #'
-#' @seealso [tilt](?tilt), shift
+#' @seealso [tilt] , shift
 #'
 #' @examples
 #' n185()
@@ -189,13 +189,12 @@ ff <- function(Ps, Qt, Pt, ID="") {
   return(ff)
 }
 
-#' Title
+#' Shift FireFlow Static Head
 #'
-#' @param fireflow
-#' @param static
+#' @param fireflow fireflow object, defined using ff()
+#' @param static proposed static head, in PSI
 #'
-#' @return
-#' @export
+#' @return FireFlow Object
 #'
 #' @examples
 #' n185()
@@ -203,6 +202,7 @@ ff <- function(Ps, Qt, Pt, ID="") {
 #' a <- ff(55, 4500, 40)
 #' draw(a)
 #'
+#' # assume the same friction loss at a new static head of 40 psi
 #' b <- shift(a, 40)
 #' draw(b, "grey50", 2)
 shift <- function(fireflow, static) {
@@ -211,8 +211,24 @@ shift <- function(fireflow, static) {
   return(fireflow)
 }
 
-tilt <- function(fireflow, friction_factor) {
-  fireflow[2] <- unlist(fireflow[2])+friction_factor
+#' Tilt FireFlow Friction Slope
+#'
+#' @param fireflow fireflow object, defined using ff()
+#' @param friction_slope proposed reduction in friction slope
+#'
+#' @return FireFlow Object
+#'
+#' @examples
+#' n185()
+#'
+#' a <- ff(55, 4500, 40)
+#' draw(a)
+#'
+#' # add friction loss from 1000 LF of 12-inch pipeline
+#' b <- tilt(a, 1000*kp(12))
+#' draw(b, "grey50", 2)
+tilt <- function(fireflow, friction_slope) {
+  fireflow[2] <- unlist(fireflow[2])+friction_slope
   fireflow[3] <- NA
   fireflow[4] <- NA
 
@@ -238,6 +254,25 @@ nff <- function(fireflow, Q) {
 
 }
 
+#' Unit Friction Slope
+#'
+#' @param D Pipe diameter in Inches
+#' @param C Hazen-Williams friction factor
+#'
+#' @return k' (numerical) unit friction slope for 1 LF of pipeline (corrected for PSI)
+#'
+#' @examples
+#' # friction factor for 5,000 LF of 12-inch pipe
+#' k <- 5000*kp(12)
+#'
+#' # Headloss at 2,000 GPM for 5,000 LF of 12-inch pipe
+#' k*2000^1.85
+#'
+#' #' # friction factor for 5,000 LF of 12-inch pipe at C=100
+#' k <- 5000*kp(12, 100)
+#'
+#' # Headloss at 2,000 GPM for 5,000 LF of 12-inch pipe
+#' k*2000^1.85
 kp <- function(D,C=130){return(10.44/C^1.85/D^4.87/2.31)}
 
 # enter just Q, just P, or both

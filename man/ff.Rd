@@ -33,5 +33,5 @@ draw(b, "blue", 2)
 draw_legend()
 }
 \seealso{
-[tilt](?tilt), shift
+[tilt] , shift
 }
