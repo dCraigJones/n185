@@ -207,7 +207,7 @@ ff <- function(Ps, Qt, Pt, ID="") {
 #' draw(b, "grey50", 2)
 shift <- function(fireflow, static) {
   fireflow[1] <- static
-
+  fireflow[5] <- paste0(fireflow[5],"*")
   return(fireflow)
 }
 
@@ -231,7 +231,7 @@ tilt <- function(fireflow, friction_slope) {
   fireflow[2] <- unlist(fireflow[2])+friction_slope
   fireflow[3] <- NA
   fireflow[4] <- NA
-
+  fireflow[5] <- paste0(fireflow[5],"*")
   return(fireflow)
 }
 
