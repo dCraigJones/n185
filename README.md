@@ -95,3 +95,31 @@ b <- shift(a, 40)
 # draw new fireflow
 draw(b, "grey50", 2)
 ```
+
+### Utility
+
+#### `aff()`
+
+Available Fireflow calculates the flow at the minimum allowable pressure (typically 20 PSI) using the fireflow object.
+
+```
+# Define a fireflow object and the available fire flow
+a <- ff(60, 3000, 20)
+aff(a)
+
+# Default minimum allowable pressure is 20 PSI
+# However, other pressures can be defined.
+aff(a, 35)
+```
+
+#### `nff()`
+
+Needed Fireflow calculated the minimum allowable pressure for the required fireflow.  It is useful when checking the available pressure at the connection point (or supply curve) of fireflow calcuations.
+
+```
+# Define a fireflow object
+a <- ff(60, 3000, 20)
+
+# Required fireflow must be specified
+nff(a, 1500)
+```
