@@ -2,6 +2,7 @@ library("shiny")
 library("shinythemes")
 library("colourpicker")
 library("DT")
+library("htmltools")
 
 source("def.R")
 source("util.R")
@@ -59,7 +60,7 @@ ui <- fluidPage(theme=shinythemes::shinytheme("united"),
      mainPanel(
          htmlOutput("main_hover")
        , plotOutput("main_plot", hover="main_hover")
-       , textOutput("main_table")
+       , DTOutput("main_table")
 
      )
 
@@ -92,6 +93,7 @@ server <- function(input, output, session) {
       title( input$g_title )
 
       if (!input$g_legend=="none") {
+        ff_info <<- unique(ff_info)
         draw_legend(input$g_legend)
       }
 
@@ -121,12 +123,18 @@ server <- function(input, output, session) {
 
     clear_fireflow(session)
 
-    # output$main_table <- DT::renderDataTable(as.data.frame(ff_info[,c(5,1,3,4)])
+    # output$main_table <- DT::renderDataTable(
+    #   as.data.frame(
+    #     unique(
+    #       ff_info[,c(5,1,3,4)]
+    #     )
+    #   )
     #     , rownames=FALSE
     #     , options=list(dom="tip")
+    #     , container=sketch
     # )
 
-  }) # oberseveEvent ff_draw
+  }) # observeEvent ff_draw
 
 
 
