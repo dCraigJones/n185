@@ -75,7 +75,6 @@ b <- tilt(a, k)
 
 # draw new fireflow
 draw(b, "grey50", 2)
-
 ```
 
 #### `shift()`
@@ -123,3 +122,13 @@ a <- ff(60, 3000, 20)
 # Required fireflow must be specified
 nff(a, 1500)
 ```
+
+### Graphics
+
+#### `n185()`
+
+#### `draw()`
+
+#### 'draw_legend()'
+
+#### `pt()`
