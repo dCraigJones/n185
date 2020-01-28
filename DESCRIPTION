@@ -1,20 +1,21 @@
 Package: n185
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Graphic functions for Fire-Flow Testing
+Version: 0.0.0.9100
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "D. Craig",
+           family = "Jones",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: What license it uses
+           email = "jones.dCraig@gmail.com")
+Description: Creates n1.85 logarithmic graphs based on NFPA 291 recommendations. Additional verbs, such as tilt() and shift(), are provided to aid analysis, in addition to common utility functions, such as aff() to calculate available fireflow at 20 PSI.
+License: CC0
 Encoding: UTF-8
 LazyData: true
 Imports: 
     shiny,
     shinythemes,
-    colourpicker
+    colourpicker,
+    DT,
+    htmltools
 RoxygenNote: 6.1.1
 Suggests: 
     testthat (>= 2.1.0)
