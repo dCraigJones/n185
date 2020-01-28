@@ -89,6 +89,7 @@ n185 <- function(MaxFlow=5000, MaxPressure=100) {
 #' @param fireflow fireflow object defined using ff function.
 #' @param color A specification for the default plotting color. See section ‘Color Specification’.
 #' @param LineType The line type. Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash)
+#' @export
 #'
 #' @seealso
 #' \code{\link{ff}}
@@ -137,6 +138,7 @@ draw <- function(fireflow, color="black", LineType=1) {
 #' @param ID Unique name for Field Fire Flow Test (used for legend)
 #'
 #' @return FireFlow Object
+#' @export
 #'
 #' @seealso [tilt] , shift
 #'
@@ -195,6 +197,7 @@ ff <- function(Ps, Qt, Pt, ID="") {
 #' @param static proposed static head, in PSI
 #'
 #' @return FireFlow Object
+#' @export
 #'
 #' @examples
 #' n185()
@@ -217,6 +220,7 @@ shift <- function(fireflow, static) {
 #' @param friction_slope proposed reduction in friction slope
 #'
 #' @return FireFlow Object
+#' @export
 #'
 #' @examples
 #' n185()
@@ -260,6 +264,7 @@ nff <- function(fireflow, Q) {
 #' @param C Hazen-Williams friction factor
 #'
 #' @return k' (numerical) unit friction slope for 1 LF of pipeline (corrected for PSI)
+#' @export
 #'
 #' @examples
 #' # friction factor for 5,000 LF of 12-inch pipe
@@ -275,7 +280,33 @@ nff <- function(fireflow, Q) {
 #' k*2000^1.85
 kp <- function(D,C=130){return(10.44/C^1.85/D^4.87/2.31)}
 
+
 # enter just Q, just P, or both
+#' Draw Fire-Flow Point
+#'
+#' Test Test Test
+#'
+#' @param Qt Test Flow to be plotted, in GPM
+#' @param Pt Test Residual to be plotted, in GPM
+#' @param fireflow fireflow object defined using ff function.
+#' @param color A specification for the point plotting color. See section ‘Color Specification’.
+#'
+#' @export
+#'
+#' @examples
+#' n185()
+#'
+#' a <- ff(60,3000,20, "first")
+#' b <- ff(50,2750, 35, "second")
+#'
+#' draw(a, "red", 1)
+#' draw(b, "blue", 2)
+#'
+#' draw_legend()
+#'
+#' pt(3000,,a, "red")
+#' pt(,20,"blue")
+#' pt(2000,20)
 pt <- function(Qt=NULL, Pt=NULL, fireflow=NULL, color="black"){
   if(is.null(Qt)) Qt <- unname(aff(fireflow, Pt))
   if(is.null(Pt)) Pt <- unname(nff(fireflow, Qt))
@@ -283,6 +314,24 @@ pt <- function(Qt=NULL, Pt=NULL, fireflow=NULL, color="black"){
   points(Qt^1.85,Pt, pch=21, bg="white", col=color, lwd=2, cex=1.5)
 }
 
+#' Draw Legend
+#'
+#' @param position keyword for position.  See Details.
+#'
+#' The location may be specified by setting position to a single keyword from the list "bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center". This places the legend on the inside of the plot frame at the given location. Partial argument matching is used.
+#'
+#' @export
+#'
+#' @examples
+#' n185()
+#'
+#' a <- ff(60,3000,20, "first")
+#' b <- ff(50,2750, 35, "second")
+#'
+#' draw(a, "red", 1)
+#' draw(b, "blue", 2)
+#'
+#' draw_legend()
 draw_legend <- function(position="topright") {
 
   legend(position
@@ -303,4 +352,10 @@ draw_legend <- function(position="topright") {
   )
 }
 
+#' Graphic User-Interface for n185
+#'
+#' @export
+#'
+#' @examples
+#' n185_ui()
 n185_ui <- function() { library(shiny); shiny::runApp("./inst/n185") }
