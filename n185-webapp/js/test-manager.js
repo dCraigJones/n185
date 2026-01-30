@@ -88,6 +88,7 @@ class TestManager {
                     color: original.color,
                     lineType: original.lineType,
                     category: original.category
+                    ,showPoint: original.showPoint
                 }
             );
             duplicate.k = original.k;

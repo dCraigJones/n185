@@ -32,6 +32,8 @@ class FireFlow {
         this.lineType = options.lineType || 'solid';
         this.category = options.category || 'field';
         this.visible = options.visible !== undefined ? options.visible : true;
+        // Whether to draw the discrete test point marker
+        this.showPoint = options.showPoint !== undefined ? options.showPoint : true;
 
         // UUID for tracking
         this.uuid = this.generateUUID();
@@ -178,6 +180,7 @@ class FireFlow {
             lineType: this.lineType,
             category: this.category,
             visible: this.visible,
+            showPoint: this.showPoint,
             isModified: this.isModified,
             parentUUID: this.parentUUID
         };
@@ -205,6 +208,7 @@ class FireFlow {
         ff.uuid = data.uuid;
         ff.testFlow = data.testFlow;
         ff.testResidual = data.testResidual;
+        ff.showPoint = data.showPoint !== undefined ? data.showPoint : true;
         ff.isModified = data.isModified || false;
         ff.parentUUID = data.parentUUID || null;
 

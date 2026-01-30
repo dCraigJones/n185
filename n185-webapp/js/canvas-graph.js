@@ -277,8 +277,8 @@ class N185Graph {
             this.ctx.beginPath();
             let firstPoint = true;
 
-            // Draw curve from 0 to maxFlow
-            for (let Q = 0; Q <= this.maxFlow * 1.5; Q += this.maxFlow / 100) {
+            // Draw curve from 0 to maxFlow (do not extend past right axis)
+            for (let Q = 0; Q <= this.maxFlow; Q += this.maxFlow / 100) {
                 const P = ff.pressureAtFlow(Q);
 
                 // Only plot if within bounds
@@ -298,8 +298,8 @@ class N185Graph {
             this.ctx.stroke();
             this.ctx.setLineDash([]);
 
-            // Draw test point if available
-            if (ff.testFlow !== null && ff.testResidual !== null) {
+            // Draw test point if available and enabled
+            if (ff.testFlow !== null && ff.testResidual !== null && ff.showPoint) {
                 this.drawTestPoint(ff);
             }
         });

@@ -264,7 +264,8 @@ function addTest() {
             const fireflow = new FireFlow(static_, flow, residual, id, {
                 color: color,
                 lineType: lineType,
-                category: category
+                category: category,
+                showPoint: false
             });
 
             // Add to manager
