@@ -72,6 +72,7 @@ class AnnotationManager {
     constructor() {
         this.annotations = [];
         this.onAnnotationsChanged = null;
+        this.onEditAnnotation = null;  // Callback when edit button clicked
     }
 
     addAnnotation(annotation) {
@@ -90,6 +91,14 @@ class AnnotationManager {
 
     getAnnotation(uuid) {
         return this.annotations.find(a => a.uuid === uuid);
+    }
+
+    updateAnnotation(uuid, properties) {
+        const annotation = this.getAnnotation(uuid);
+        if (annotation) {
+            Object.assign(annotation, properties);
+            this.notifyChange();
+        }
     }
 
     toggleVisibility(uuid) {
@@ -247,6 +256,7 @@ class AnnotationsPanel {
                 </div>
 
                 <button id="btn-add-annotation" class="btn btn-primary btn-block">Add Annotation</button>
+                <button id="btn-cancel-annotation" class="btn btn-secondary btn-block" style="display: none; margin-top: 8px;">Cancel Edit</button>
             </div>
 
             <!-- Annotations List -->
@@ -276,7 +286,19 @@ class AnnotationsPanel {
 
         // Add annotation button
         document.getElementById('btn-add-annotation').addEventListener('click', () => {
-            this.addAnnotation();
+            // Check if we're in edit mode (editingAnnotationUuid is defined in app.js)
+            const editingUuid = window.editingAnnotationUuid || null;
+            this.addAnnotation(editingUuid);
+
+            // Clear form after adding/updating
+            if (window.clearAnnotationForm) {
+                window.clearAnnotationForm();
+            }
+        });
+
+        // Cancel annotation edit button
+        document.getElementById('btn-cancel-annotation').addEventListener('click', () => {
+            clearAnnotationForm();
         });
     }
 
@@ -291,45 +313,81 @@ class AnnotationsPanel {
         label.textContent = lineType === 'horizontal' ? 'Pressure (PSI):' : 'Flow (GPM):';
     }
 
-    addAnnotation() {
+    addAnnotation(editingUuid = null) {
         const type = document.getElementById('ann-type').value;
-        let annotation;
 
         try {
-            if (type === 'point') {
-                annotation = new Annotation('point', {
-                    text: document.getElementById('ann-point-text').value,
-                    Q: parseFloat(document.getElementById('ann-point-q').value),
-                    P: parseFloat(document.getElementById('ann-point-p').value),
-                    color: document.getElementById('ann-point-color').value,
-                    size: document.getElementById('ann-point-size').value
-                });
-            } else if (type === 'label') {
-                annotation = new Annotation('label', {
-                    text: document.getElementById('ann-label-text').value,
-                    Q: parseFloat(document.getElementById('ann-label-q').value),
-                    P: parseFloat(document.getElementById('ann-label-p').value),
-                    color: document.getElementById('ann-label-color').value,
-                    fontSize: document.getElementById('ann-label-fontsize').value
-                });
-            } else if (type === 'line') {
-                const lineType = document.getElementById('ann-line-type').value;
-                const value = parseFloat(document.getElementById('ann-line-value').value);
+            if (editingUuid) {
+                // Update existing annotation
+                const ann = this.annotationManager.getAnnotation(editingUuid);
+                if (!ann) return;
 
-                annotation = new Annotation('line', {
-                    text: document.getElementById('ann-line-text').value,
-                    lineType: lineType,
-                    value: value,
-                    Q: lineType === 'vertical' ? value : 0,
-                    P: lineType === 'horizontal' ? value : 0,
-                    color: document.getElementById('ann-line-color').value,
-                    lineStyle: document.getElementById('ann-line-style').value
-                });
+                if (type === 'point') {
+                    ann.text = document.getElementById('ann-point-text').value;
+                    ann.Q = parseFloat(document.getElementById('ann-point-q').value);
+                    ann.P = parseFloat(document.getElementById('ann-point-p').value);
+                    ann.color = document.getElementById('ann-point-color').value;
+                    ann.size = document.getElementById('ann-point-size').value;
+                } else if (type === 'label') {
+                    ann.text = document.getElementById('ann-label-text').value;
+                    ann.Q = parseFloat(document.getElementById('ann-label-q').value);
+                    ann.P = parseFloat(document.getElementById('ann-label-p').value);
+                    ann.color = document.getElementById('ann-label-color').value;
+                    ann.fontSize = document.getElementById('ann-label-fontsize').value;
+                } else if (type === 'line') {
+                    const lineType = document.getElementById('ann-line-type').value;
+                    const value = parseFloat(document.getElementById('ann-line-value').value);
+
+                    ann.text = document.getElementById('ann-line-text').value;
+                    ann.lineType = lineType;
+                    ann.value = value;
+                    ann.Q = lineType === 'vertical' ? value : 0;
+                    ann.P = lineType === 'horizontal' ? value : 0;
+                    ann.color = document.getElementById('ann-line-color').value;
+                    ann.lineStyle = document.getElementById('ann-line-style').value;
+                }
+
+                // Notify changes
+                this.annotationManager.notifyChange();
+            } else {
+                // Create new annotation
+                let annotation;
+
+                if (type === 'point') {
+                    annotation = new Annotation('point', {
+                        text: document.getElementById('ann-point-text').value,
+                        Q: parseFloat(document.getElementById('ann-point-q').value),
+                        P: parseFloat(document.getElementById('ann-point-p').value),
+                        color: document.getElementById('ann-point-color').value,
+                        size: document.getElementById('ann-point-size').value
+                    });
+                } else if (type === 'label') {
+                    annotation = new Annotation('label', {
+                        text: document.getElementById('ann-label-text').value,
+                        Q: parseFloat(document.getElementById('ann-label-q').value),
+                        P: parseFloat(document.getElementById('ann-label-p').value),
+                        color: document.getElementById('ann-label-color').value,
+                        fontSize: document.getElementById('ann-label-fontsize').value
+                    });
+                } else if (type === 'line') {
+                    const lineType = document.getElementById('ann-line-type').value;
+                    const value = parseFloat(document.getElementById('ann-line-value').value);
+
+                    annotation = new Annotation('line', {
+                        text: document.getElementById('ann-line-text').value,
+                        lineType: lineType,
+                        value: value,
+                        Q: lineType === 'vertical' ? value : 0,
+                        P: lineType === 'horizontal' ? value : 0,
+                        color: document.getElementById('ann-line-color').value,
+                        lineStyle: document.getElementById('ann-line-style').value
+                    });
+                }
+
+                this.annotationManager.addAnnotation(annotation);
             }
-
-            this.annotationManager.addAnnotation(annotation);
         } catch (error) {
-            alert('Error adding annotation: ' + error.message);
+            alert('Error saving annotation: ' + error.message);
         }
     }
 
@@ -358,6 +416,7 @@ class AnnotationsPanel {
                             <button class="btn-ann-visibility" title="Toggle visibility">
                                 ${ann.visible ? '👁️' : '👁️‍🗨️'}
                             </button>
+                            <button class="btn-ann-edit" title="Edit">✏️</button>
                             <button class="btn-ann-delete" title="Delete">🗑️</button>
                         </div>
                     </div>
@@ -393,6 +452,16 @@ class AnnotationsPanel {
             btn.addEventListener('click', (e) => {
                 const uuid = e.target.closest('.annotation-item').dataset.uuid;
                 this.annotationManager.toggleVisibility(uuid);
+            });
+        });
+
+        // Edit
+        document.querySelectorAll('.btn-ann-edit').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const uuid = e.target.closest('.annotation-item').dataset.uuid;
+                if (this.annotationManager.onEditAnnotation) {
+                    this.annotationManager.onEditAnnotation(uuid);
+                }
             });
         });
 

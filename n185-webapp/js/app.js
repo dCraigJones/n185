@@ -13,6 +13,7 @@ let annotationManager;
 let annotationsPanel;
 let projectIO;
 let editingTestUuid = null;  // Track which test is being edited
+let editingAnnotationUuid = null;  // Track which annotation is being edited
 
 /**
  * Initialize application
@@ -58,6 +59,10 @@ function setupEventListeners() {
     annotationManager.onAnnotationsChanged = (annotations) => {
         annotationsPanel.renderAnnotationsList();
         graph.setAnnotations(annotations);
+    };
+
+    annotationManager.onEditAnnotation = (uuid) => {
+        editAnnotation(uuid);
     };
 
     // Test form submission
@@ -293,6 +298,82 @@ function clearTestForm() {
 }
 
 /**
+ * Edit an existing annotation - populate form with annotation data
+ */
+function editAnnotation(uuid) {
+    const ann = annotationManager.getAnnotation(uuid);
+    if (!ann) return;
+
+    // Set annotation type selector
+    document.getElementById('ann-type').value = ann.type;
+    annotationsPanel.showTypeFields(ann.type);
+
+    // Populate fields based on type
+    if (ann.type === 'point') {
+        document.getElementById('ann-point-text').value = ann.text || '';
+        document.getElementById('ann-point-q').value = ann.Q;
+        document.getElementById('ann-point-p').value = ann.P;
+        document.getElementById('ann-point-color').value = ann.color;
+        document.getElementById('ann-point-size').value = ann.size;
+    } else if (ann.type === 'label') {
+        document.getElementById('ann-label-text').value = ann.text || '';
+        document.getElementById('ann-label-q').value = ann.Q;
+        document.getElementById('ann-label-p').value = ann.P;
+        document.getElementById('ann-label-color').value = ann.color;
+        document.getElementById('ann-label-fontsize').value = ann.fontSize;
+    } else if (ann.type === 'line') {
+        document.getElementById('ann-line-type').value = ann.lineType;
+        annotationsPanel.updateLineValueLabel(ann.lineType);
+        document.getElementById('ann-line-value').value = ann.value;
+        document.getElementById('ann-line-text').value = ann.text || '';
+        document.getElementById('ann-line-color').value = ann.color;
+        document.getElementById('ann-line-style').value = ann.lineStyle;
+    }
+
+    // Set edit mode
+    setEditingAnnotationUuid(uuid);
+
+    // Update button text and show cancel button
+    const submitBtn = document.getElementById('btn-add-annotation');
+    submitBtn.textContent = 'Update Annotation';
+    submitBtn.classList.remove('btn-primary');
+    submitBtn.classList.add('btn-warning');
+
+    const cancelBtn = document.getElementById('btn-cancel-annotation');
+    cancelBtn.style.display = 'block';
+
+    // Scroll form into view
+    document.getElementById('annotations-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/**
+ * Clear annotation input form and reset to add mode
+ */
+function clearAnnotationForm() {
+    // Reset to default values
+    document.getElementById('ann-type').value = 'point';
+    annotationsPanel.showTypeFields('point');
+
+    document.getElementById('ann-point-text').value = '';
+    document.getElementById('ann-point-q').value = 2000;
+    document.getElementById('ann-point-p').value = 35;
+    document.getElementById('ann-point-color').value = '#ff0000';
+    document.getElementById('ann-point-size').value = 'medium';
+
+    // Reset edit mode
+    setEditingAnnotationUuid(null);
+
+    // Update button text and hide cancel button
+    const submitBtn = document.getElementById('btn-add-annotation');
+    submitBtn.textContent = 'Add Annotation';
+    submitBtn.classList.remove('btn-warning');
+    submitBtn.classList.add('btn-primary');
+
+    const cancelBtn = document.getElementById('btn-cancel-annotation');
+    cancelBtn.style.display = 'none';
+}
+
+/**
  * Update graph with current settings
  */
 function updateGraph() {
@@ -302,6 +383,16 @@ function updateGraph() {
     const showDate = document.getElementById('graph-show-date').checked;
 
     graph.update(maxFlow, maxPressure, title, showDate);
+}
+
+// Expose functions globally for use by other modules
+window.clearAnnotationForm = clearAnnotationForm;
+window.editingAnnotationUuid = null;
+
+// Update global editing state when editing annotation
+function setEditingAnnotationUuid(uuid) {
+    editingAnnotationUuid = uuid;
+    window.editingAnnotationUuid = uuid;
 }
 
 // Initialize app when DOM is ready
