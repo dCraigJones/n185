@@ -9,6 +9,7 @@ class TestManager {
         this.selectedTest = null;
         this.onTestsChanged = null;  // Callback when tests change
         this.onTestSelected = null;  // Callback when selection changes
+        this.onEditTest = null;  // Callback when edit button clicked
     }
 
     /**
@@ -216,6 +217,7 @@ class TestListUI {
                         <button class="btn-visibility" title="Toggle visibility">
                             ${test.visible ? '👁️' : '👁️‍🗨️'}
                         </button>
+                        <button class="btn-edit" title="Edit">✏️</button>
                         <button class="btn-duplicate" title="Duplicate">📋</button>
                         <button class="btn-delete" title="Delete">🗑️</button>
                     </div>
@@ -263,6 +265,17 @@ class TestListUI {
                 e.stopPropagation();
                 const uuid = e.target.closest('.test-item').dataset.uuid;
                 this.testManager.toggleVisibility(uuid);
+            });
+        });
+
+        // Edit
+        this.container.querySelectorAll('.btn-edit').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const uuid = e.target.closest('.test-item').dataset.uuid;
+                if (this.testManager.onEditTest) {
+                    this.testManager.onEditTest(uuid);
+                }
             });
         });
 

@@ -101,6 +101,11 @@ body {
     color: white;
 }
 
+.btn-warning {
+    background-color: var(--warning);
+    color: var(--text-dark);
+}
+
 /* Forms */
 .form-group {
     margin-bottom: 12px;

@@ -10,6 +10,7 @@ let testListUI;
 let calculationsPanel;
 let modelingPanel;
 let projectIO;
+let editingTestUuid = null;  // Track which test is being edited
 
 /**
  * Initialize application
@@ -46,10 +47,19 @@ function setupEventListeners() {
         modelingPanel.updateTest(test);
     };
 
+    testManager.onEditTest = (uuid) => {
+        editTest(uuid);
+    };
+
     // Test form submission
     document.getElementById('test-form').addEventListener('submit', (e) => {
         e.preventDefault();
         addTest();
+    });
+
+    // Cancel edit button
+    document.getElementById('test-form-cancel').addEventListener('click', () => {
+        clearTestForm();
     });
 
     // Collapsible "Add New Test" section
@@ -155,7 +165,7 @@ function setupEventListeners() {
 }
 
 /**
- * Add a new test from the form
+ * Add or update a test from the form
  */
 function addTest() {
     try {
@@ -167,25 +177,87 @@ function addTest() {
         const lineType = document.getElementById('test-linetype').value;
         const category = document.getElementById('test-category').value;
 
-        // Create fireflow object
-        const fireflow = new FireFlow(static_, flow, residual, id, {
-            color: color,
-            lineType: lineType,
-            category: category
-        });
+        if (editingTestUuid) {
+            // Update existing test
+            const test = testManager.getTest(editingTestUuid);
+            if (test) {
+                // Update properties
+                test.static = parseFloat(static_);
+                test.testFlow = parseFloat(flow);
+                test.testResidual = parseFloat(residual);
+                test.id = id;
+                test.color = color;
+                test.lineType = lineType;
+                test.category = category;
 
-        // Add to manager
-        testManager.addTest(fireflow);
+                // Recalculate friction coefficient
+                test.k = (test.static - test.testResidual) / Math.pow(test.testFlow, 1.85);
+
+                // Notify changes
+                testManager.notifyChange();
+            }
+        } else {
+            // Create new fireflow object
+            const fireflow = new FireFlow(static_, flow, residual, id, {
+                color: color,
+                lineType: lineType,
+                category: category
+            });
+
+            // Add to manager
+            testManager.addTest(fireflow);
+        }
 
         // Clear form
         clearTestForm();
     } catch (error) {
-        alert('Error adding test: ' + error.message);
+        alert('Error saving test: ' + error.message);
     }
 }
 
 /**
- * Clear test input form
+ * Edit an existing test - populate form with test data
+ */
+function editTest(uuid) {
+    const test = testManager.getTest(uuid);
+    if (!test) return;
+
+    // Populate form fields
+    document.getElementById('test-id').value = test.id || '';
+    document.getElementById('test-static').value = test.static;
+    document.getElementById('test-flow').value = test.testFlow || 0;
+    document.getElementById('test-residual').value = test.testResidual || 0;
+    document.getElementById('test-color').value = test.color;
+    document.getElementById('test-linetype').value = test.lineType;
+    document.getElementById('test-category').value = test.category;
+
+    // Set edit mode
+    editingTestUuid = uuid;
+
+    // Update button text and show cancel button
+    const submitBtn = document.getElementById('test-form-submit');
+    submitBtn.textContent = 'Update Test';
+    submitBtn.classList.remove('btn-primary');
+    submitBtn.classList.add('btn-warning');
+
+    const cancelBtn = document.getElementById('test-form-cancel');
+    cancelBtn.style.display = 'block';
+
+    // Expand the form if collapsed
+    const addTestHeader = document.getElementById('add-test-header');
+    const addTestContent = document.getElementById('add-test-content');
+    addTestHeader.classList.remove('collapsed');
+    addTestContent.classList.remove('collapsed');
+
+    // Update header to show edit mode
+    addTestHeader.querySelector('span').textContent = `Edit Test: ${test.id || 'Unnamed'}`;
+
+    // Scroll form into view
+    document.getElementById('test-form').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/**
+ * Clear test input form and reset to add mode
  */
 function clearTestForm() {
     document.getElementById('test-id').value = '';
@@ -193,6 +265,22 @@ function clearTestForm() {
     document.getElementById('test-flow').value = 0;
     document.getElementById('test-residual').value = 0;
     // Keep color, linetype, and category as-is
+
+    // Reset edit mode
+    editingTestUuid = null;
+
+    // Update button text and hide cancel button
+    const submitBtn = document.getElementById('test-form-submit');
+    submitBtn.textContent = 'Add Test';
+    submitBtn.classList.remove('btn-warning');
+    submitBtn.classList.add('btn-primary');
+
+    const cancelBtn = document.getElementById('test-form-cancel');
+    cancelBtn.style.display = 'none';
+
+    // Reset header text
+    const addTestHeader = document.getElementById('add-test-header');
+    addTestHeader.querySelector('span').textContent = 'Add New Test';
 }
 
 /**
