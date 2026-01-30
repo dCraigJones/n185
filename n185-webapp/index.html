@@ -119,24 +119,39 @@
                 <div class="panel-content">
                     <!-- Calculations Display -->
                     <div class="section">
-                        <h3>Live Calculations</h3>
-                        <div id="calc-display" class="calc-display">
-                            <p class="empty-state">Select a test to view calculations</p>
+                        <h3 class="collapsible-header" id="calculations-header">
+                            <span>Live Calculations</span>
+                            <span class="collapse-icon">▼</span>
+                        </h3>
+                        <div class="collapsible-content" id="calculations-content">
+                            <div id="calc-display" class="calc-display">
+                                <p class="empty-state">Select a test to view calculations</p>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Modeling Tools -->
                     <div class="section">
-                        <h3>Modeling Tools</h3>
-                        <div id="modeling-tools" class="modeling-tools">
-                            <p class="empty-state">Select a test to apply transformations</p>
+                        <h3 class="collapsible-header" id="modeling-header">
+                            <span>Modeling Tools</span>
+                            <span class="collapse-icon">▼</span>
+                        </h3>
+                        <div class="collapsible-content" id="modeling-content">
+                            <div id="modeling-tools" class="modeling-tools">
+                                <p class="empty-state">Select a test to apply transformations</p>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Annotations -->
                     <div class="section">
-                        <h3>📝 Annotations</h3>
-                        <div id="annotations-panel"></div>
+                        <h3 class="collapsible-header collapsed" id="annotations-header">
+                            <span>📝 Annotations</span>
+                            <span class="collapse-icon">▼</span>
+                        </h3>
+                        <div class="collapsible-content collapsed" id="annotations-content">
+                            <div id="annotations-panel"></div>
+                        </div>
                     </div>
                 </div>
             </aside>

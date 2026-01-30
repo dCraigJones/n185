@@ -50,6 +50,22 @@ function setupEventListeners() {
         testListUI.render();
         calculationsPanel.updateTest(test);
         modelingPanel.updateTest(test);
+
+        // Expand calculations panel when a test is selected
+        const calculationsHeader = document.getElementById('calculations-header');
+        const calculationsContent = document.getElementById('calculations-content');
+        if (calculationsHeader && calculationsContent) {
+            calculationsHeader.classList.remove('collapsed');
+            calculationsContent.classList.remove('collapsed');
+        }
+
+        // Expand modeling panel when a test is selected
+        const modelingHeader = document.getElementById('modeling-header');
+        const modelingContent = document.getElementById('modeling-content');
+        if (modelingHeader && modelingContent) {
+            modelingHeader.classList.remove('collapsed');
+            modelingContent.classList.remove('collapsed');
+        }
     };
 
     testManager.onEditTest = (uuid) => {
@@ -84,6 +100,39 @@ function setupEventListeners() {
         addTestHeader.classList.toggle('collapsed');
         addTestContent.classList.toggle('collapsed');
     });
+
+    // Collapsible Annotations section
+    const annotationsHeader = document.getElementById('annotations-header');
+    const annotationsContent = document.getElementById('annotations-content');
+
+    if (annotationsHeader && annotationsContent) {
+        annotationsHeader.addEventListener('click', () => {
+            annotationsHeader.classList.toggle('collapsed');
+            annotationsContent.classList.toggle('collapsed');
+        });
+    }
+
+    // Collapsible Calculations section
+    const calculationsHeader = document.getElementById('calculations-header');
+    const calculationsContent = document.getElementById('calculations-content');
+
+    if (calculationsHeader && calculationsContent) {
+        calculationsHeader.addEventListener('click', () => {
+            calculationsHeader.classList.toggle('collapsed');
+            calculationsContent.classList.toggle('collapsed');
+        });
+    }
+
+    // Collapsible Modeling Tools section
+    const modelingHeader = document.getElementById('modeling-header');
+    const modelingContent = document.getElementById('modeling-content');
+
+    if (modelingHeader && modelingContent) {
+        modelingHeader.addEventListener('click', () => {
+            modelingHeader.classList.toggle('collapsed');
+            modelingContent.classList.toggle('collapsed');
+        });
+    }
 
     // Graph settings modal
     const settingsModal = document.getElementById('settings-modal');
@@ -333,6 +382,13 @@ function editAnnotation(uuid) {
     // Set edit mode
     setEditingAnnotationUuid(uuid);
 
+    // Expand annotations panel if collapsed
+    const annotationsHeader = document.getElementById('annotations-header');
+    const annotationsContent = document.getElementById('annotations-content');
+    if (annotationsHeader && annotationsContent) {
+        annotationsHeader.classList.remove('collapsed');
+        annotationsContent.classList.remove('collapsed');
+    }
     // Update button text and show cancel button
     const submitBtn = document.getElementById('btn-add-annotation');
     submitBtn.textContent = 'Update Annotation';
