@@ -29,7 +29,11 @@
                 <div class="panel-content">
                     <!-- Test Input Form -->
                     <div class="section">
-                        <h3>Add New Test</h3>
+                        <h3 class="collapsible-header" id="add-test-header">
+                            <span>Add New Test</span>
+                            <span class="collapse-icon">▼</span>
+                        </h3>
+                        <div class="collapsible-content" id="add-test-content">
                         <form id="test-form">
                             <div class="form-group">
                                 <label for="test-id">Test ID:</label>
@@ -74,6 +78,7 @@
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">Add Test</button>
                         </form>
+                        </div>
                     </div>
 
                     <!-- Test List -->

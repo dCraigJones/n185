@@ -52,6 +52,15 @@ function setupEventListeners() {
         addTest();
     });
 
+    // Collapsible "Add New Test" section
+    const addTestHeader = document.getElementById('add-test-header');
+    const addTestContent = document.getElementById('add-test-content');
+
+    addTestHeader.addEventListener('click', () => {
+        addTestHeader.classList.toggle('collapsed');
+        addTestContent.classList.toggle('collapsed');
+    });
+
     // Graph settings modal
     const settingsModal = document.getElementById('settings-modal');
 

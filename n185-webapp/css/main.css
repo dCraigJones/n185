@@ -160,6 +160,41 @@ body {
     color: var(--primary-color);
 }
 
+/* Collapsible Sections */
+.collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+}
+
+.collapsible-header:hover {
+    color: var(--secondary-color);
+}
+
+.collapse-icon {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.collapsible-header.collapsed .collapse-icon {
+    transform: rotate(-90deg);
+}
+
+.collapsible-content {
+    max-height: 2000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+}
+
+.collapsible-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
 /* Test List */
 .test-list {
     max-height: 400px;
