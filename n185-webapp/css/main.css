@@ -356,6 +356,89 @@ body {
     color: var(--text-dark);
 }
 
+/* Annotations */
+.annotation-section {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--bg-light);
+}
+
+.annotation-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.annotation-section h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.ann-type-fields {
+    margin-top: 12px;
+}
+
+.annotations-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.annotation-item {
+    background-color: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 8px;
+    transition: all 0.2s;
+}
+
+.annotation-item:hover {
+    box-shadow: var(--shadow);
+}
+
+.annotation-item.hidden {
+    opacity: 0.5;
+}
+
+.annotation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.annotation-name {
+    font-weight: 600;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.annotation-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.annotation-actions button {
+    padding: 4px 8px;
+    font-size: 11px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.annotation-actions button:hover {
+    background-color: var(--bg-light);
+}
+
+.annotation-info {
+    font-size: 11px;
+    color: var(--text-light);
+}
+
 /* Graph Container */
 .graph-container {
     position: relative;

@@ -9,6 +9,8 @@ let graph;
 let testListUI;
 let calculationsPanel;
 let modelingPanel;
+let annotationManager;
+let annotationsPanel;
 let projectIO;
 let editingTestUuid = null;  // Track which test is being edited
 
@@ -22,7 +24,9 @@ function initApp() {
     testListUI = new TestListUI('test-list', testManager);
     calculationsPanel = new CalculationsPanel('calc-display');
     modelingPanel = new ModelingPanel('modeling-tools', testManager);
-    projectIO = new ProjectIO(testManager, graph);
+    annotationManager = new AnnotationManager();
+    annotationsPanel = new AnnotationsPanel('annotations-panel', annotationManager, graph);
+    projectIO = new ProjectIO(testManager, graph, annotationManager);
 
     // Set up event listeners
     setupEventListeners();
@@ -49,6 +53,11 @@ function setupEventListeners() {
 
     testManager.onEditTest = (uuid) => {
         editTest(uuid);
+    };
+
+    annotationManager.onAnnotationsChanged = (annotations) => {
+        annotationsPanel.renderAnnotationsList();
+        graph.setAnnotations(annotations);
     };
 
     // Test form submission

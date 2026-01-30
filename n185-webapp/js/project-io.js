@@ -4,12 +4,14 @@
  */
 
 class ProjectIO {
-    constructor(testManager, graph) {
+    constructor(testManager, graph, annotationManager) {
         this.testManager = testManager;
         this.graph = graph;
+        this.annotationManager = annotationManager;
         this.currentProject = {
             name: 'Untitled Project',
             tests: [],
+            annotations: [],
             graphSettings: {
                 maxFlow: 5000,
                 maxPressure: 100,
@@ -25,6 +27,7 @@ class ProjectIO {
     saveProject() {
         // Get current state
         this.currentProject.tests = this.testManager.exportToJSON();
+        this.currentProject.annotations = this.annotationManager.exportToJSON();
         this.currentProject.graphSettings = {
             maxFlow: this.graph.maxFlow,
             maxPressure: this.graph.maxPressure,
@@ -62,11 +65,17 @@ class ProjectIO {
                 // Load project
                 this.currentProject = project;
 
-                // Clear existing tests
+                // Clear existing tests and annotations
                 this.testManager.clearAll();
+                this.annotationManager.clearAll();
 
                 // Import tests
                 this.testManager.importFromJSON(project.tests);
+
+                // Import annotations (if present)
+                if (project.annotations) {
+                    this.annotationManager.importFromJSON(project.annotations);
+                }
 
                 // Apply graph settings
                 const gs = project.graphSettings;
@@ -99,9 +108,11 @@ class ProjectIO {
 
         // Reset everything
         this.testManager.clearAll();
+        this.annotationManager.clearAll();
         this.currentProject = {
             name: 'Untitled Project',
             tests: [],
+            annotations: [],
             graphSettings: {
                 maxFlow: 5000,
                 maxPressure: 100,

@@ -22,6 +22,9 @@ class N185Graph {
         // Fireflow objects to plot
         this.fireflows = [];
 
+        // Annotations to draw
+        this.annotations = [];
+
         // Mouse tracking
         this.mousePos = null;
 
@@ -107,6 +110,7 @@ class N185Graph {
         this.drawGrid();
         this.drawAxes();
         this.drawFireflows();
+        this.drawAnnotations();
         this.drawTitle();
         this.drawBorder();
     }
@@ -335,6 +339,154 @@ class N185Graph {
     }
 
     /**
+     * Draw annotations
+     */
+    drawAnnotations() {
+        this.annotations.forEach(ann => {
+            if (!ann.visible) return;
+
+            if (ann.type === 'point') {
+                this.drawPointAnnotation(ann);
+            } else if (ann.type === 'label') {
+                this.drawLabelAnnotation(ann);
+            } else if (ann.type === 'line') {
+                this.drawLineAnnotation(ann);
+            }
+        });
+    }
+
+    /**
+     * Draw point marker annotation
+     */
+    drawPointAnnotation(ann) {
+        const x = this.flowToX(ann.Q);
+        const y = this.pressureToY(ann.P);
+
+        // Check if within plot bounds
+        if (x < this.margin.left || x > this.margin.left + this.plotWidth ||
+            y < this.margin.top || y > this.margin.top + this.plotHeight) {
+            return;
+        }
+
+        // Determine size
+        const sizeMap = { small: 8, medium: 12, large: 16 };
+        const radius = sizeMap[ann.size] || 12;
+
+        // Draw point
+        this.ctx.fillStyle = ann.color;
+        this.ctx.strokeStyle = '#ffffff';
+        this.ctx.lineWidth = 2;
+
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, radius, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // Draw label if present
+        if (ann.text) {
+            this.ctx.fillStyle = ann.color;
+            this.ctx.font = 'bold 12px sans-serif';
+            this.ctx.textAlign = 'left';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.fillText(ann.text, x + radius + 4, y);
+        }
+    }
+
+    /**
+     * Draw text label annotation
+     */
+    drawLabelAnnotation(ann) {
+        const x = this.flowToX(ann.Q);
+        const y = this.pressureToY(ann.P);
+
+        // Check if within plot bounds
+        if (x < this.margin.left || x > this.margin.left + this.plotWidth ||
+            y < this.margin.top || y > this.margin.top + this.plotHeight) {
+            return;
+        }
+
+        // Determine font size
+        const fontSizeMap = { small: '11px', medium: '13px', large: '16px' };
+        const fontSize = fontSizeMap[ann.fontSize] || '13px';
+
+        // Draw text
+        this.ctx.fillStyle = ann.color;
+        this.ctx.font = `${fontSize} sans-serif`;
+        this.ctx.textAlign = 'left';
+        this.ctx.textBaseline = 'bottom';
+        this.ctx.fillText(ann.text, x + 2, y - 2);
+    }
+
+    /**
+     * Draw reference line annotation
+     */
+    drawLineAnnotation(ann) {
+        this.ctx.strokeStyle = ann.color;
+        this.ctx.lineWidth = 2;
+
+        // Set line style
+        if (ann.lineStyle === 'dashed') {
+            this.ctx.setLineDash([8, 4]);
+        } else {
+            this.ctx.setLineDash([]);
+        }
+
+        if (ann.lineType === 'horizontal') {
+            // Horizontal line at specific pressure
+            const y = this.pressureToY(ann.P);
+
+            // Check if within plot bounds
+            if (y < this.margin.top || y > this.margin.top + this.plotHeight) {
+                this.ctx.setLineDash([]);
+                return;
+            }
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.margin.left, y);
+            this.ctx.lineTo(this.margin.left + this.plotWidth, y);
+            this.ctx.stroke();
+
+            // Draw label
+            if (ann.text) {
+                this.ctx.fillStyle = ann.color;
+                this.ctx.font = 'bold 11px sans-serif';
+                this.ctx.textAlign = 'right';
+                this.ctx.textBaseline = 'bottom';
+                this.ctx.fillText(ann.text, this.margin.left + this.plotWidth - 5, y - 3);
+            }
+        } else if (ann.lineType === 'vertical') {
+            // Vertical line at specific flow
+            const x = this.flowToX(ann.Q);
+
+            // Check if within plot bounds
+            if (x < this.margin.left || x > this.margin.left + this.plotWidth) {
+                this.ctx.setLineDash([]);
+                return;
+            }
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(x, this.margin.top);
+            this.ctx.lineTo(x, this.margin.top + this.plotHeight);
+            this.ctx.stroke();
+
+            // Draw label
+            if (ann.text) {
+                this.ctx.fillStyle = ann.color;
+                this.ctx.font = 'bold 11px sans-serif';
+                this.ctx.textAlign = 'left';
+                this.ctx.textBaseline = 'top';
+                this.ctx.save();
+                this.ctx.translate(x + 3, this.margin.top + 5);
+                this.ctx.rotate(Math.PI / 2);
+                this.ctx.fillText(ann.text, 0, 0);
+                this.ctx.restore();
+            }
+        }
+
+        this.ctx.setLineDash([]);
+    }
+
+    /**
      * Draw title and metadata
      */
     drawTitle() {
@@ -383,6 +535,14 @@ class N185Graph {
      */
     setFireflows(fireflows) {
         this.fireflows = fireflows;
+        this.render();
+    }
+
+    /**
+     * Set annotations to draw
+     */
+    setAnnotations(annotations) {
+        this.annotations = annotations;
         this.render();
     }
 
