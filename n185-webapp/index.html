@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n185 Fire Flow Analysis</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/panels.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>n<sup>1.85</sup> Fire Flow Analysis</h1>
+            <div class="header-actions">
+                <button id="btn-new-project" class="btn btn-secondary">New Project</button>
+                <button id="btn-load-project" class="btn btn-secondary">Load Project</button>
+                <button id="btn-save-project" class="btn btn-primary">Save Project</button>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <!-- Left Panel: Test Management -->
+            <aside class="panel panel-left">
+                <div class="panel-header">
+                    <h2>Fire Flow Tests</h2>
+                </div>
+                <div class="panel-content">
+                    <!-- Test Input Form -->
+                    <div class="section">
+                        <h3>Add New Test</h3>
+                        <form id="test-form">
+                            <div class="form-group">
+                                <label for="test-id">Test ID:</label>
+                                <input type="text" id="test-id" placeholder="e.g., FH-1523">
+                            </div>
+                            <div class="form-group">
+                                <label for="test-static">Static Pressure (PSI):</label>
+                                <input type="number" id="test-static" step="0.1" min="0" placeholder="60">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="test-flow">Test Flow (GPM):</label>
+                                    <input type="number" id="test-flow" step="1" min="0" placeholder="3000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="test-residual">Residual (PSI):</label>
+                                    <input type="number" id="test-residual" step="0.1" min="0" placeholder="20">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="test-color">Line Color:</label>
+                                    <input type="color" id="test-color" value="#142B6C">
+                                </div>
+                                <div class="form-group">
+                                    <label for="test-linetype">Line Type:</label>
+                                    <select id="test-linetype">
+                                        <option value="solid">Solid</option>
+                                        <option value="dashed">Dashed</option>
+                                        <option value="dotted">Dotted</option>
+                                        <option value="dashdot">Dash-Dot</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="test-category">Category:</label>
+                                <select id="test-category">
+                                    <option value="field">Field Tests</option>
+                                    <option value="model">Model Results</option>
+                                    <option value="scenario">Scenarios</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Add Test</button>
+                        </form>
+                    </div>
+
+                    <!-- Test List -->
+                    <div class="section">
+                        <h3>Test List</h3>
+                        <div id="test-list" class="test-list">
+                            <p class="empty-state">No tests added yet</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Panel: Graph -->
+            <section class="panel panel-center">
+                <div class="panel-header">
+                    <h2>Fire Flow Graph</h2>
+                    <div class="graph-controls">
+                        <button id="btn-graph-settings" class="btn btn-secondary btn-sm" title="Graph Settings">⚙️ Settings</button>
+                        <button id="btn-export-png" class="btn btn-secondary btn-sm">Export PNG</button>
+                        <button id="btn-export-jpg" class="btn btn-secondary btn-sm">Export JPG</button>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <!-- Canvas Graph -->
+                    <div class="graph-container">
+                        <canvas id="fireflow-canvas"></canvas>
+                        <div id="graph-tooltip" class="graph-tooltip"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Calculations & Modeling -->
+            <aside class="panel panel-right">
+                <div class="panel-header">
+                    <h2>Calculations & Modeling</h2>
+                </div>
+                <div class="panel-content">
+                    <!-- Calculations Display -->
+                    <div class="section">
+                        <h3>Live Calculations</h3>
+                        <div id="calc-display" class="calc-display">
+                            <p class="empty-state">Select a test to view calculations</p>
+                        </div>
+                    </div>
+
+                    <!-- Modeling Tools -->
+                    <div class="section">
+                        <h3>Modeling Tools</h3>
+                        <div id="modeling-tools" class="modeling-tools">
+                            <p class="empty-state">Select a test to apply transformations</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Graph Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Graph Settings</h3>
+                <button class="modal-close" id="btn-close-settings">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="graph-title">Title:</label>
+                    <input type="text" id="graph-title" placeholder="Fire Flow Test Results">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="graph-show-date">
+                        Show Date
+                    </label>
+                </div>
+                <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="graph-max-flow">Max Flow (GPM):</label>
+                        <input type="number" id="graph-max-flow" value="5000" step="1000" min="1000">
+                    </div>
+                    <div class="form-group">
+                        <label for="graph-max-pressure">Max Pressure (PSI):</label>
+                        <input type="number" id="graph-max-pressure" value="100" step="10" min="10">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-apply-settings" class="btn btn-primary">Apply Settings</button>
+                <button id="btn-cancel-settings" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input for loading projects -->
+    <input type="file" id="file-input-project" accept=".n185" style="display: none;">
+
+    <!-- Scripts -->
+    <script src="lib/FileSaver.js"></script>
+    <script src="js/fireflow.js"></script>
+    <script src="js/canvas-graph.js"></script>
+    <script src="js/test-manager.js"></script>
+    <script src="js/calculations.js"></script>
+    <script src="js/modeling.js"></script>
+    <script src="js/project-io.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

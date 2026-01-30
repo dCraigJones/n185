@@ -1,0 +1,40 @@
+{
+  "name": "Example Fire Flow Analysis",
+  "tests": [
+    {
+      "uuid": "ff-example-1",
+      "static": 60,
+      "testFlow": 3000,
+      "testResidual": 20,
+      "id": "Hydrant FH-1523",
+      "k": 0.000004592592592592593,
+      "color": "#142B6C",
+      "lineType": "solid",
+      "category": "field",
+      "visible": true,
+      "isModified": false,
+      "parentUUID": null
+    },
+    {
+      "uuid": "ff-example-2",
+      "static": 50,
+      "testFlow": 2750,
+      "testResidual": 35,
+      "id": "Hydrant FH-1680",
+      "k": 0.000004166666666666667,
+      "color": "#006A97",
+      "lineType": "solid",
+      "category": "field",
+      "visible": true,
+      "isModified": false,
+      "parentUUID": null
+    }
+  ],
+  "graphSettings": {
+    "maxFlow": 5000,
+    "maxPressure": 100,
+    "title": "Example Fire Flow Test Results",
+    "showDate": true
+  },
+  "savedDate": "2026-01-30T00:00:00.000Z"
+}
