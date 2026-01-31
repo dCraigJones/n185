@@ -214,8 +214,13 @@ function setupEventListeners() {
                 Flow: ${formatNumber(data.Q, 0)} GPM<br>
                 Pressure: ${formatNumber(data.P, 1)} PSI
             `;
-            tooltip.style.left = (e.clientX + 10) + 'px';
-            tooltip.style.top = (e.clientY + 10) + 'px';
+
+            // Position tooltip relative to the canvas container
+            const containerRect = canvas.getBoundingClientRect();
+            const left = (e.clientX - containerRect.left) + 10;
+            const top = (e.clientY - containerRect.top) + 10;
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
             tooltip.classList.add('visible');
         } else {
             tooltip.classList.remove('visible');

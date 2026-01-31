@@ -51,8 +51,13 @@ class N185Graph {
         this.canvas.width = displayWidth * dpr;
         this.canvas.height = displayHeight * dpr;
 
-        // Scale context for high DPI
-        this.ctx.scale(dpr, dpr);
+        // Reset any existing transforms then scale context for high DPI
+        if (this.ctx.resetTransform) {
+            this.ctx.resetTransform();
+            this.ctx.scale(dpr, dpr);
+        } else {
+            this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
 
         // Update plot dimensions
         this.width = displayWidth;
