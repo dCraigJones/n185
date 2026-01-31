@@ -550,7 +550,26 @@ class N185Graph {
      * Export canvas to image
      */
     exportImage(format = 'png') {
-        return this.canvas.toDataURL('image/' + format);
+        // Create a temporary canvas at the same internal pixel size
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = w;
+        tempCanvas.height = h;
+        const tctx = tempCanvas.getContext('2d');
+
+        // Fill full background with white so exported image is solid white
+        tctx.fillStyle = '#ffffff';
+        tctx.fillRect(0, 0, w, h);
+
+        // Draw the source canvas onto the temporary canvas
+        tctx.drawImage(this.canvas, 0, 0);
+
+        // Return data URL in requested format (JPEG will have no alpha)
+        if (format === 'jpeg' || format === 'jpg') {
+            return tempCanvas.toDataURL('image/jpeg');
+        }
+        return tempCanvas.toDataURL('image/' + format);
     }
 
     /**
