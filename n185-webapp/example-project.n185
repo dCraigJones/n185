@@ -8,7 +8,7 @@
       "testResidual": 20,
       "id": "Hydrant FH-1523",
       "k": 0.000004592592592592593,
-      "color": "#142B6C",
+      "color": "#006A97",
       "lineType": "solid",
       "category": "field",
       "visible": true,

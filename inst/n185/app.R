@@ -24,7 +24,7 @@ ui <- fluidPage(theme=shinythemes::shinytheme("united"),
        , textInput("ff_id", "Fireflow Identifier", "")
 
        , div(style="display:inline-block;vertical-align:top;", fluidRow(
-            column(6, colourpicker::colourInput("ff_color", "Line Color", "#142B6C") ),
+            column(6, colourpicker::colourInput("ff_color", "Line Color", "#006A97") ),
             column(6, selectInput("ff_linetype", "Line Type", r_lty) )
        )) #div
        , br()

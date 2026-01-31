@@ -4,7 +4,7 @@ clear_fireflow <- function(session) {
   updateNumericInput(session, "ff_flow", value=0)
   updateNumericInput(session, "ff_residual", value=0)
   updateTextInput(session, "ff_id", value="")
-  updateColourInput(session, "ff_color", value="#142B6C")
+  updateColourInput(session, "ff_color", value="#006A97")
   updateSelectInput(session, "ff_linetype", selected=r_lty[1])
 
 }

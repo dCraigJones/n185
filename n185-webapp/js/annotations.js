@@ -153,9 +153,9 @@ class AnnotationsPanel {
                 <div class="form-group">
                     <label>Type:</label>
                     <select id="ann-type">
-                        <option value="point">📍 Point Marker</option>
-                        <option value="label">📝 Text Label</option>
-                        <option value="line">─ Reference Line</option>
+                        <option value="point">Point Marker</option>
+                        <option value="label">Text Label</option>
+                        <option value="line">Reference Line</option>
                     </select>
                 </div>
 

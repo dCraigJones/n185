@@ -30,7 +30,7 @@ class ModelingPanel {
         const html = `
             <!-- Tilt (Friction Adjustment) -->
             <div class="modeling-section">
-                <h4>⚙️ Tilt (Friction Adjustment)</h4>
+                <h4>Tilt (Friction Adjustment)</h4>
                 <p style="font-size: 12px; color: #666; margin-bottom: 8px;">
                     Add or remove pipe friction loss
                 </p>
@@ -66,7 +66,7 @@ class ModelingPanel {
 
             <!-- Shift (Static Adjustment) -->
             <div class="modeling-section">
-                <h4>⬆️ Shift (Static Adjustment)</h4>
+                <h4>Shift (Static Adjustment)</h4>
                 <p style="font-size: 12px; color: #666; margin-bottom: 8px;">
                     Adjust for elevation or static pressure changes
                 </p>
@@ -98,7 +98,7 @@ class ModelingPanel {
 
             <!-- What-If Scenarios -->
             <div class="modeling-section">
-                <h4>🔍 What-If Analysis</h4>
+                <h4>What-If Analysis</h4>
                 <p style="font-size: 12px; color: #666; margin-bottom: 8px;">
                     Compare multiple pipe sizes
                 </p>

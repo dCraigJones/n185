@@ -28,7 +28,7 @@ class FireFlow {
         this.k = (this.static - this.testResidual) / Math.pow(this.testFlow, 1.85);
 
         // Visual properties
-        this.color = options.color || '#142B6C';
+        this.color = options.color || '#006A97';
         this.lineType = options.lineType || 'solid';
         this.category = options.category || 'field';
         this.visible = options.visible !== undefined ? options.visible : true;
