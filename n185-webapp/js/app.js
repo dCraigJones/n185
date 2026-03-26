@@ -251,15 +251,20 @@ function addTest() {
             if (test) {
                 // Update properties
                 test.static = parseFloat(static_);
-                test.testFlow = parseFloat(flow);
-                test.testResidual = parseFloat(residual);
+                if (!test.isModified) {
+                    test.testFlow = parseFloat(flow);
+                    test.testResidual = parseFloat(residual);
+                }
                 test.id = id;
                 test.color = color;
                 test.lineType = lineType;
                 test.category = category;
 
-                // Recalculate friction coefficient
-                test.k = (test.static - test.testResidual) / Math.pow(test.testFlow, 1.85);
+                // Recalculate friction coefficient only for unmodified tests
+                // (tilt/shift results have null testFlow/testResidual — k must be preserved)
+                if (!test.isModified) {
+                    test.k = (test.static - test.testResidual) / Math.pow(test.testFlow, 1.85);
+                }
 
                 // Notify changes
                 testManager.notifyChange();
