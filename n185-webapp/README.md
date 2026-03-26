@@ -13,21 +13,19 @@ A standalone, offline-capable web application for analyzing fire flow test resul
 ### n^1.85 Logarithmic Graph
 - **NFPA 291 Standard** - Accurate logarithmic graph matching industry standards
 - **Custom Scaling** - Adjust max flow and pressure for your specific needs
+- **Legend** - Optional on-graph legend with configurable position (9 positions)
 - **Interactive Tooltips** - Hover over graph to see flow and pressure values
 - **High-Quality Export** - Export to PNG or JPG for reports
 
 ### Modeling & Analysis
 - **Tilt (Friction Adjustment)** - Add or remove pipe friction loss
-  - Specify pipe length, diameter, and C-value
+  - Add multiple pipe segments in series
+  - Specify length, diameter, and C-value per segment
   - Model upstream or downstream scenarios
 
 - **Shift (Static Adjustment)** - Adjust for elevation or static pressure changes
   - Direct static pressure input
   - Automatic elevation conversion (0.433 PSI/ft)
-
-- **What-If Scenarios** - Compare multiple pipe sizes simultaneously
-  - Generate multiple scenarios with one click
-  - Color-coded for easy comparison
 
 ### Live Calculations
 - **Available Fire Flow (AFF)** - at 20, 30, and 40 PSI
@@ -39,7 +37,7 @@ A standalone, offline-capable web application for analyzing fire flow test resul
 - **Save Projects** - Save complete sessions as .n185 files
 - **Load Projects** - Resume work from saved files
 - **Offline Capable** - Works without internet connection
-- **All Data Preserved** - Tests, modeling parameters, and graph settings
+- **All Data Preserved** - Tests, annotations, graph settings, and legend position
 
 ## How to Use
 
@@ -54,7 +52,8 @@ A standalone, offline-capable web application for analyzing fire flow test resul
 - Input Static Pressure (PSI)
 - Input Test Flow (GPM)
 - Input Test Residual (PSI)
-- Choose color and line type
+- Choose color from preset swatches or custom color picker
+- Choose line type
 - Click "Add Test"
 
 #### 2. View and Manage Tests
@@ -67,24 +66,24 @@ A standalone, offline-capable web application for analyzing fire flow test resul
 #### 3. Apply Transformations
 Select a test, then use the modeling tools:
 
-**Tilt Example:**
-- Length: 3218 feet
-- Diameter: 12 inches
-- C-value: 130
+**Tilt Example (single pipe):**
+- Length: 3218 feet, Diameter: 12 inches, C-value: 130
 - Operation: Add friction (downstream)
 - Creates a new test showing conditions downstream
+
+**Tilt Example (multiple pipes in series):**
+- Pipe 1: 1000 ft, 12 in, C=130
+- Pipe 2: 500 ft, 8 in, C=100
+- Click "+ Add Pipe" to add each segment
+- Friction slopes are summed automatically
 
 **Shift Example:**
 - Elevation Change: 23 feet (higher)
 - Automatically adjusts static pressure (-9.96 PSI)
 
-**What-If Example:**
-- Length: 1000 feet
-- Sizes: 12, 16, 20
-- Creates 3 scenarios for comparison
-
 #### 4. Customize Graph
 - Set title and toggle date display
+- Set legend position (or none)
 - Adjust max flow and pressure ranges
 - Tests automatically redraw
 
@@ -105,7 +104,7 @@ n185-webapp/
 │   ├── canvas-graph.js    # n^1.85 graph renderer
 │   ├── test-manager.js    # Test CRUD operations
 │   ├── calculations.js    # Live calculations display
-│   ├── modeling.js        # Tilt/shift/what-if UI
+│   ├── modeling.js        # Tilt/shift modeling UI
 │   ├── project-io.js      # Save/load functionality
 │   └── app.js             # Main application coordinator
 ├── lib/
@@ -172,13 +171,6 @@ All code and libraries are bundled. No CDN dependencies. Works without internet 
    - Operation: Add friction
    - ID: "FH-1523 (3218 LF downstream)"
 3. Compare both curves on graph
-
-### Example 3: Pipe Upgrade Analysis
-1. Add baseline test
-2. Select test and use What-If:
-   - Length: 5000 ft
-   - Sizes: 12, 16, 20, 24
-3. Compare all scenarios to see benefit of larger pipe
 
 ## Support
 
