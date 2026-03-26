@@ -443,8 +443,9 @@ function updateGraph() {
     const maxPressure = parseInt(document.getElementById('graph-max-pressure').value);
     const title = document.getElementById('graph-title').value;
     const showDate = document.getElementById('graph-show-date').checked;
+    const legendPosition = document.getElementById('graph-legend-position').value;
 
-    graph.update(maxFlow, maxPressure, title, showDate);
+    graph.update(maxFlow, maxPressure, title, showDate, legendPosition);
 }
 
 // Expose functions globally for use by other modules

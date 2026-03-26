@@ -19,6 +19,9 @@ class N185Graph {
         this.title = '';
         this.showDate = false;
 
+        // Legend
+        this.legendPosition = 'none';
+
         // Fireflow objects to plot
         this.fireflows = [];
 
@@ -118,6 +121,7 @@ class N185Graph {
         this.drawAnnotations();
         this.drawTitle();
         this.drawBorder();
+        this.drawLegend();
     }
 
     /**
@@ -511,6 +515,82 @@ class N185Graph {
     }
 
     /**
+     * Draw legend box on the plot, matching draw_legend() R style
+     */
+    drawLegend() {
+        if (this.legendPosition === 'none') return;
+
+        const visible = this.fireflows.filter(ff => ff.visible && ff.id);
+        if (!visible.length) return;
+
+        const ctx = this.ctx;
+        const padding = 10;
+        const lineLen = 30;
+        const gap = 6;
+        const fontSize = 12;
+        const lineHeight = Math.round(fontSize * 1.4 * 0.8);
+
+        ctx.font = `bold ${fontSize}px serif`;
+
+        let maxTextWidth = 0;
+        visible.forEach(ff => {
+            const w = ctx.measureText(ff.id || '').width;
+            if (w > maxTextWidth) maxTextWidth = w;
+        });
+
+        const boxWidth = padding * 2 + lineLen + gap + maxTextWidth;
+        const boxHeight = padding * 2 + visible.length * lineHeight;
+
+        const insetX = this.plotWidth * 0.05;
+        const insetY = this.plotHeight * 0.05;
+        const plotLeft = this.margin.left;
+        const plotTop = this.margin.top;
+
+        const pos = this.legendPosition;
+        let bx, by;
+
+        if (pos.includes('right')) {
+            bx = plotLeft + this.plotWidth - insetX - boxWidth;
+        } else if (pos.includes('left')) {
+            bx = plotLeft + insetX;
+        } else {
+            bx = plotLeft + this.plotWidth / 2 - boxWidth / 2;
+        }
+
+        if (pos.includes('top')) {
+            by = plotTop + insetY;
+        } else if (pos.includes('bottom')) {
+            by = plotTop + this.plotHeight - insetY - boxHeight;
+        } else {
+            by = plotTop + this.plotHeight / 2 - boxHeight / 2;
+        }
+
+        // Background
+        ctx.fillStyle = 'rgba(255,255,255,0.75)';
+        ctx.fillRect(bx, by, boxWidth, boxHeight);
+
+        // Entries
+        visible.forEach((ff, i) => {
+            const y = by + padding + i * lineHeight + fontSize / 2;
+
+            ctx.strokeStyle = ff.color;
+            ctx.lineWidth = 2;
+            ctx.setLineDash(this.getLineDash(ff.lineType));
+            ctx.beginPath();
+            ctx.moveTo(bx + padding, y);
+            ctx.lineTo(bx + padding + lineLen, y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#000000';
+            ctx.font = `bold ${fontSize}px serif`;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(ff.id || '', bx + padding + lineLen + gap, y);
+        });
+    }
+
+    /**
      * Draw border around plot area
      */
     drawBorder() {
@@ -527,11 +607,12 @@ class N185Graph {
     /**
      * Update graph parameters and redraw
      */
-    update(maxFlow, maxPressure, title, showDate) {
+    update(maxFlow, maxPressure, title, showDate, legendPosition) {
         this.maxFlow = maxFlow;
         this.maxPressure = maxPressure;
         this.title = title;
         this.showDate = showDate;
+        if (legendPosition !== undefined) this.legendPosition = legendPosition;
         this.render();
     }
 

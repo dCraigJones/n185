@@ -32,7 +32,8 @@ class ProjectIO {
             maxFlow: this.graph.maxFlow,
             maxPressure: this.graph.maxPressure,
             title: this.graph.title,
-            showDate: this.graph.showDate
+            showDate: this.graph.showDate,
+            legendPosition: this.graph.legendPosition
         };
         this.currentProject.savedDate = new Date().toISOString();
 
@@ -79,13 +80,15 @@ class ProjectIO {
 
                 // Apply graph settings
                 const gs = project.graphSettings;
-                this.graph.update(gs.maxFlow, gs.maxPressure, gs.title, gs.showDate);
+                const legendPosition = gs.legendPosition || 'none';
+                this.graph.update(gs.maxFlow, gs.maxPressure, gs.title, gs.showDate, legendPosition);
 
                 // Update UI
                 document.getElementById('graph-max-flow').value = gs.maxFlow;
                 document.getElementById('graph-max-pressure').value = gs.maxPressure;
                 document.getElementById('graph-title').value = gs.title;
                 document.getElementById('graph-show-date').checked = gs.showDate;
+                document.getElementById('graph-legend-position').value = legendPosition;
 
                 alert(`Project "${project.name}" loaded successfully`);
             } catch (error) {
@@ -117,16 +120,18 @@ class ProjectIO {
                 maxFlow: 5000,
                 maxPressure: 100,
                 title: '',
-                showDate: false
+                showDate: false,
+                legendPosition: 'none'
             }
         };
 
         // Reset graph settings
-        this.graph.update(5000, 100, '', false);
+        this.graph.update(5000, 100, '', false, 'none');
         document.getElementById('graph-max-flow').value = 5000;
         document.getElementById('graph-max-pressure').value = 100;
         document.getElementById('graph-title').value = '';
         document.getElementById('graph-show-date').checked = false;
+        document.getElementById('graph-legend-position').value = 'none';
     }
 
     /**
