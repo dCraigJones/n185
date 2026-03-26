@@ -34,28 +34,27 @@ class ModelingPanel {
                 <p style="font-size: 12px; color: #666; margin-bottom: 8px;">
                     Add or remove pipe friction loss
                 </p>
+                <div class="tilt-pipe-header">
+                    <span>Length (ft)</span>
+                    <span>Dia (in)</span>
+                    <span>C</span>
+                    <span></span>
+                </div>
+                <div id="tilt-pipes">
+                    <div class="tilt-pipe-row">
+                        <input type="number" class="tilt-length" value="1000" step="100">
+                        <input type="number" class="tilt-diameter" value="12" step="1">
+                        <input type="number" class="tilt-c-value" value="130" step="10">
+                        <button type="button" class="btn-remove-pipe" title="Remove">✕</button>
+                    </div>
+                </div>
+                <button id="btn-add-pipe" class="btn btn-secondary btn-sm btn-block" style="margin: 6px 0 10px;">+ Add Pipe</button>
                 <div class="form-group">
-                    <label>Pipe Length (feet):</label>
-                    <input type="number" id="tilt-length" value="1000" step="100">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Diameter (inches):</label>
-                        <input type="number" id="tilt-diameter" value="12" step="1">
-                    </div>
-                    <div class="form-group">
-                        <label>C-value:</label>
-                        <input type="number" id="tilt-c-value" value="130" step="10">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Operation:</label>
-                        <select id="tilt-operation">
-                            <option value="add">Add friction (downstream)</option>
-                            <option value="remove">Remove friction (upstream)</option>
-                        </select>
-                    </div>
+                    <label>Operation:</label>
+                    <select id="tilt-operation">
+                        <option value="add">Add friction (downstream)</option>
+                        <option value="remove">Remove friction (upstream)</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>New Test ID:</label>
@@ -96,7 +95,7 @@ class ModelingPanel {
                 <button id="btn-apply-shift" class="btn btn-primary btn-block">Apply Shift</button>
             </div>
 
-            <!-- What-If Scenarios -->
+            <!-- What-If Scenarios (disabled — preserved for future reimplementation)
             <div class="modeling-section">
                 <h4>What-If Analysis</h4>
                 <p style="font-size: 12px; color: #666; margin-bottom: 8px;">
@@ -116,6 +115,7 @@ class ModelingPanel {
                 </div>
                 <button id="btn-apply-whatif" class="btn btn-primary btn-block">Create Scenarios</button>
             </div>
+            -->
         `;
 
         this.container.innerHTML = html;
@@ -129,6 +129,16 @@ class ModelingPanel {
         // Tilt
         document.getElementById('btn-apply-tilt').addEventListener('click', () => {
             this.applyTilt();
+        });
+
+        document.getElementById('btn-add-pipe').addEventListener('click', () => {
+            this.addPipeRow();
+        });
+
+        this.container.querySelectorAll('.btn-remove-pipe').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.removePipeRow(e.target.closest('.tilt-pipe-row'));
+            });
         });
 
         // Shift type toggle
@@ -151,26 +161,28 @@ class ModelingPanel {
             this.applyShift();
         });
 
-        // What-if
-        document.getElementById('btn-apply-whatif').addEventListener('click', () => {
-            this.applyWhatIf();
-        });
+        // What-if (disabled — preserved for future reimplementation)
+        // document.getElementById('btn-apply-whatif').addEventListener('click', () => {
+        //     this.applyWhatIf();
+        // });
     }
 
     /**
      * Apply tilt transformation
      */
     applyTilt() {
-        const length = parseFloat(document.getElementById('tilt-length').value);
-        const diameter = parseFloat(document.getElementById('tilt-diameter').value);
-        const cValue = parseFloat(document.getElementById('tilt-c-value').value);
         const operation = document.getElementById('tilt-operation').value;
         const newId = document.getElementById('tilt-new-id').value;
 
-        // Calculate friction slope
-        let frictionSlope = length * kp(diameter, cValue);
+        // Sum friction slope across all pipe rows
+        let frictionSlope = 0;
+        this.container.querySelectorAll('.tilt-pipe-row').forEach(row => {
+            const length = parseFloat(row.querySelector('.tilt-length').value);
+            const diameter = parseFloat(row.querySelector('.tilt-diameter').value);
+            const cValue = parseFloat(row.querySelector('.tilt-c-value').value);
+            frictionSlope += length * kp(diameter, cValue);
+        });
 
-        // If removing friction, negate the value
         if (operation === 'remove') {
             frictionSlope = -frictionSlope;
         }
@@ -224,9 +236,9 @@ class ModelingPanel {
     }
 
     /**
-     * Apply what-if analysis
+     * Apply what-if analysis (disabled — preserved for future reimplementation)
      */
-    applyWhatIf() {
+    /* applyWhatIf() {
         const length = parseFloat(document.getElementById('whatif-length').value);
         const cValue = parseFloat(document.getElementById('whatif-c-value').value);
         const sizesStr = document.getElementById('whatif-sizes').value;
@@ -257,6 +269,33 @@ class ModelingPanel {
 
         // Show notification
         this.showNotification(`Created ${createdCount} what-if scenarios`);
+    } */
+
+    /**
+     * Add a new pipe row to the tilt section
+     */
+    addPipeRow() {
+        const pipesContainer = document.getElementById('tilt-pipes');
+        const row = document.createElement('div');
+        row.className = 'tilt-pipe-row';
+        row.innerHTML = `
+            <input type="number" class="tilt-length" value="1000" step="100">
+            <input type="number" class="tilt-diameter" value="12" step="1">
+            <input type="number" class="tilt-c-value" value="130" step="10">
+            <button type="button" class="btn-remove-pipe" title="Remove">✕</button>
+        `;
+        row.querySelector('.btn-remove-pipe').addEventListener('click', () => {
+            this.removePipeRow(row);
+        });
+        pipesContainer.appendChild(row);
+    }
+
+    /**
+     * Remove a pipe row (keep at least one)
+     */
+    removePipeRow(row) {
+        const rows = this.container.querySelectorAll('.tilt-pipe-row');
+        if (rows.length > 1) row.remove();
     }
 
     /**

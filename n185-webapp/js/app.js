@@ -198,6 +198,9 @@ function setupEventListeners() {
         e.target.value = '';  // Reset input
     });
 
+    // Color swatch picker
+    setupColorSwatches();
+
     // Canvas hover for tooltip
     const canvas = document.getElementById('fireflow-canvas');
     const tooltip = document.getElementById('graph-tooltip');
@@ -251,15 +254,20 @@ function addTest() {
             if (test) {
                 // Update properties
                 test.static = parseFloat(static_);
-                test.testFlow = parseFloat(flow);
-                test.testResidual = parseFloat(residual);
+                if (!test.isModified) {
+                    test.testFlow = parseFloat(flow);
+                    test.testResidual = parseFloat(residual);
+                }
                 test.id = id;
                 test.color = color;
                 test.lineType = lineType;
                 test.category = category;
 
-                // Recalculate friction coefficient
-                test.k = (test.static - test.testResidual) / Math.pow(test.testFlow, 1.85);
+                // Recalculate friction coefficient only for unmodified tests
+                // (tilt/shift results have null testFlow/testResidual — k must be preserved)
+                if (!test.isModified) {
+                    test.k = (test.static - test.testResidual) / Math.pow(test.testFlow, 1.85);
+                }
 
                 // Notify changes
                 testManager.notifyChange();
@@ -297,6 +305,7 @@ function editTest(uuid) {
     document.getElementById('test-flow').value = test.testFlow || 0;
     document.getElementById('test-residual').value = test.testResidual || 0;
     document.getElementById('test-color').value = test.color;
+    selectSwatch(test.color);
     document.getElementById('test-linetype').value = test.lineType;
     document.getElementById('test-category').value = test.category;
 
@@ -333,7 +342,9 @@ function clearTestForm() {
     document.getElementById('test-static').value = 0;
     document.getElementById('test-flow').value = 0;
     document.getElementById('test-residual').value = 0;
-    // Keep color, linetype, and category as-is
+    // Reset color to default and sync swatch
+    document.getElementById('test-color').value = '#006A97';
+    selectSwatch('#006A97');
 
     // Reset edit mode
     editingTestUuid = null;
@@ -443,8 +454,9 @@ function updateGraph() {
     const maxPressure = parseInt(document.getElementById('graph-max-pressure').value);
     const title = document.getElementById('graph-title').value;
     const showDate = document.getElementById('graph-show-date').checked;
+    const legendPosition = document.getElementById('graph-legend-position').value;
 
-    graph.update(maxFlow, maxPressure, title, showDate);
+    graph.update(maxFlow, maxPressure, title, showDate, legendPosition);
 }
 
 // Expose functions globally for use by other modules
@@ -455,6 +467,51 @@ window.editingAnnotationUuid = null;
 function setEditingAnnotationUuid(uuid) {
     editingAnnotationUuid = uuid;
     window.editingAnnotationUuid = uuid;
+}
+
+/**
+ * Set up color swatch picker interactions
+ */
+function setupColorSwatches() {
+    const colorInput = document.getElementById('test-color');
+    const swatches = document.querySelectorAll('.color-swatch');
+
+    swatches.forEach(swatch => {
+        swatch.addEventListener('click', () => {
+            if (swatch.classList.contains('color-swatch-custom')) {
+                colorInput.click();
+            } else {
+                colorInput.value = swatch.dataset.color;
+                selectSwatch(swatch.dataset.color);
+            }
+        });
+    });
+
+    // When native picker changes (custom), deselect presets
+    colorInput.addEventListener('input', () => {
+        selectSwatch(colorInput.value);
+    });
+}
+
+/**
+ * Highlight the swatch matching the given color, or the custom swatch if no match
+ */
+function selectSwatch(color) {
+    const swatches = document.querySelectorAll('.color-swatch');
+    let matched = false;
+
+    swatches.forEach(swatch => {
+        swatch.classList.remove('selected');
+        if (swatch.dataset.color && swatch.dataset.color.toLowerCase() === color.toLowerCase()) {
+            swatch.classList.add('selected');
+            matched = true;
+        }
+    });
+
+    // If no preset matched, highlight the custom swatch
+    if (!matched) {
+        document.querySelector('.color-swatch-custom').classList.add('selected');
+    }
 }
 
 // Initialize app when DOM is ready

@@ -56,7 +56,19 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="test-color">Line Color:</label>
-                                    <input type="color" id="test-color" value="#006A97">
+                                    <div class="color-swatch-picker">
+                                        <div class="swatch-row">
+                                            <button type="button" class="color-swatch" data-color="#14276C" style="background:#14276C;" title="JEA Dark"></button>
+                                            <button type="button" class="color-swatch selected" data-color="#006A97" style="background:#006A97;" title="JEA Blue"></button>
+                                            <button type="button" class="color-swatch" data-color="#41AD49" style="background:#41AD49;" title="JEA Green"></button>
+                                            <button type="button" class="color-swatch" data-color="#C0392B" style="background:#C0392B;" title="Red"></button>
+                                            <button type="button" class="color-swatch" data-color="#8E44AD" style="background:#8E44AD;" title="Purple"></button>
+                                            <button type="button" class="color-swatch" data-color="#000000" style="background:#000000;" title="Black"></button>
+                                            <button type="button" class="color-swatch" data-color="#7F8C8D" style="background:#7F8C8D;" title="Grey"></button>
+                                            <button type="button" class="color-swatch color-swatch-custom" title="Custom color"></button>
+                                        </div>
+                                        <input type="color" id="test-color" value="#006A97">
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="test-linetype">Line Type:</label>
@@ -175,6 +187,21 @@
                         <input type="checkbox" id="graph-show-date">
                         Show Date
                     </label>
+                </div>
+                <div class="form-group">
+                    <label for="graph-legend-position">Legend Position:</label>
+                    <select id="graph-legend-position">
+                        <option value="none" selected>None</option>
+                        <option value="topright">Top Right</option>
+                        <option value="topleft">Top Left</option>
+                        <option value="top">Top</option>
+                        <option value="bottomright">Bottom Right</option>
+                        <option value="bottomleft">Bottom Left</option>
+                        <option value="bottom">Bottom</option>
+                        <option value="right">Right</option>
+                        <option value="left">Left</option>
+                        <option value="center">Center</option>
+                    </select>
                 </div>
                 <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
                 <div class="form-row">

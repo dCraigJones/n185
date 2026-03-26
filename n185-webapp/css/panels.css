@@ -24,12 +24,14 @@
 }
 
 .panel-header {
-    padding: 16px 20px;
+    padding: 0 20px;
+    height: 56px;
     background-color: var(--bg-light);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .panel-header h2 {

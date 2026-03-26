@@ -79,19 +79,10 @@ class TestManager {
     duplicateTest(uuid) {
         const original = this.getTest(uuid);
         if (original) {
-            const duplicate = new FireFlow(
-                original.static,
-                original.testFlow || 1000,
-                original.testResidual || original.static - 1,
-                original.id + ' (copy)',
-                {
-                    color: original.color,
-                    lineType: original.lineType,
-                    category: original.category
-                    ,showPoint: original.showPoint
-                }
-            );
-            duplicate.k = original.k;
+            const json = original.toJSON();
+            json.id = original.id + ' (copy)';
+            const duplicate = FireFlow.fromJSON(json);
+            duplicate.uuid = duplicate.generateUUID();
             this.addTest(duplicate);
             return duplicate;
         }
