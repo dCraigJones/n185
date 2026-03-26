@@ -95,7 +95,7 @@ class ModelingPanel {
                 <button id="btn-apply-shift" class="btn btn-primary btn-block">Apply Shift</button>
             </div>
 
-            <!-- What-If Scenarios -->
+            <!-- What-If Scenarios (disabled — preserved for future reimplementation)
             <div class="modeling-section">
                 <h4>What-If Analysis</h4>
                 <p style="font-size: 12px; color: #666; margin-bottom: 8px;">
@@ -115,6 +115,7 @@ class ModelingPanel {
                 </div>
                 <button id="btn-apply-whatif" class="btn btn-primary btn-block">Create Scenarios</button>
             </div>
+            -->
         `;
 
         this.container.innerHTML = html;
@@ -160,10 +161,10 @@ class ModelingPanel {
             this.applyShift();
         });
 
-        // What-if
-        document.getElementById('btn-apply-whatif').addEventListener('click', () => {
-            this.applyWhatIf();
-        });
+        // What-if (disabled — preserved for future reimplementation)
+        // document.getElementById('btn-apply-whatif').addEventListener('click', () => {
+        //     this.applyWhatIf();
+        // });
     }
 
     /**
@@ -235,9 +236,9 @@ class ModelingPanel {
     }
 
     /**
-     * Apply what-if analysis
+     * Apply what-if analysis (disabled — preserved for future reimplementation)
      */
-    applyWhatIf() {
+    /* applyWhatIf() {
         const length = parseFloat(document.getElementById('whatif-length').value);
         const cValue = parseFloat(document.getElementById('whatif-c-value').value);
         const sizesStr = document.getElementById('whatif-sizes').value;
@@ -268,7 +269,7 @@ class ModelingPanel {
 
         // Show notification
         this.showNotification(`Created ${createdCount} what-if scenarios`);
-    }
+    } */
 
     /**
      * Add a new pipe row to the tilt section
